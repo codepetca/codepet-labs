@@ -3,12 +3,10 @@ import Image from "next/image";
 import { SectionHeading } from "@/components/section-heading";
 
 const notes = [
-  { title: "Optional", body: "No grades. No employment tie." },
-  { title: "Independent", body: "Not school-affiliated." },
-  { title: "Portfolio", body: "Build visible work." },
-  { title: "Separate repos", body: "Mock data first." },
-  { title: "Restricted access", body: "No production student data." },
-  { title: "Flexible future", body: "Work may be rewritten later." },
+  { title: "Start small", body: "Pick one useful idea." },
+  { title: "Mock first", body: "Use sample data." },
+  { title: "Work in PRs", body: "Share early drafts." },
+  { title: "Demo often", body: "Show what works." },
 ];
 
 export default function JoinPage() {
