@@ -29,13 +29,35 @@ pnpm build
 
 ## Content Model
 
-The site is static-first. Content lives in local files:
+The public site is static-first. Content lives in local files:
 
 - `content/projects.json` stores project cards shown on `/projects`.
 - `content/updates/2026-summer-launch.md` is rendered on `/showcase`.
 - `docs/` stores practical operating docs for students and reviewers.
 
-There is no database, auth layer, or production data dependency.
+There is no database or production data dependency. The optional member hub uses
+WorkOS for authentication and organization membership.
+
+## Member Management
+
+Labs has a lightweight WorkOS-backed approval flow:
+
+- `/join` sends students to AuthKit sign-up.
+- `/hub` lets signed-in users add their GitHub username and see approval status.
+- `/admin` lets allowlisted admins approve, pause, reactivate, or hide members.
+
+Set these environment variables locally and in Vercel:
+
+```bash
+WORKOS_API_KEY=
+WORKOS_CLIENT_ID=
+WORKOS_COOKIE_PASSWORD=
+WORKOS_REDIRECT_URI=http://localhost:3000/callback
+CODEPET_WORKOS_ORG_ID=
+CODEPET_ADMIN_EMAILS=you@example.com
+```
+
+See `.env.example` and `docs/member-management.md` for the full setup.
 
 ## Add a Project
 
@@ -64,7 +86,8 @@ This app is ready for Vercel:
 3. Keep the default Next.js settings.
 4. Deploy.
 
-No environment variables are required for the initial site.
+Add the WorkOS environment variables above before enabling the join/member hub
+flow in production.
 
 ## Docs
 
@@ -73,6 +96,7 @@ No environment variables are required for the initial site.
 - [Workflow](docs/workflow.md)
 - [AI Guidelines](docs/ai-guidelines.md)
 - [UI/UX Style Guide](docs/ui-ux-style.md)
+- [Member Management](docs/member-management.md)
 - [Onboarding](docs/onboarding.md)
 - [Student Roles](docs/student-roles.md)
 - [Project Ideas](docs/project-ideas.md)

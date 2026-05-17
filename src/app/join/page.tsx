@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { SectionHeading } from "@/components/section-heading";
 
@@ -17,6 +18,20 @@ export default function JoinPage() {
         title="Invite-only"
         description="Small. Optional. Experimental."
       />
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Link
+          href="/signup"
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+        >
+          Join with GitHub
+        </Link>
+        <Link
+          href="/hub"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
+        >
+          Member hub
+        </Link>
+      </div>
 
       <div className="mt-7 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">

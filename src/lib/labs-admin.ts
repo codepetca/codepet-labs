@@ -1,0 +1,199 @@
+import { WorkOS } from "@workos-inc/node";
+import { withAuth } from "@workos-inc/authkit-nextjs";
+
+export type LabsConfig = {
+  apiKey: string;
+  orgId: string;
+  adminEmails: string[];
+  studentRoleSlug: string;
+  adminRoleSlug: string;
+};
+
+export type LabsUser = {
+  id: string;
+  name: string;
+  email: string;
+  githubUsername: string | null;
+  labsStatus: string | null;
+  createdAt: string;
+  lastSignInAt: string | null;
+};
+
+export type LabsMember = LabsUser & {
+  membershipId: string;
+  membershipStatus: string;
+  role: string;
+  roles: string[];
+  memberSince: string;
+};
+
+let workosClient: WorkOS | null = null;
+
+export function getLabsConfigStatus() {
+  const missing = [
+    "WORKOS_API_KEY",
+    "WORKOS_CLIENT_ID",
+    "WORKOS_COOKIE_PASSWORD",
+    "WORKOS_REDIRECT_URI",
+    "CODEPET_WORKOS_ORG_ID",
+    "CODEPET_ADMIN_EMAILS",
+  ].filter((key) => !process.env[key]);
+
+  return {
+    ready: missing.length === 0,
+    missing,
+  };
+}
+
+export function getLabsConfig(): LabsConfig {
+  const status = getLabsConfigStatus();
+
+  if (!status.ready) {
+    throw new Error(`Missing Labs auth config: ${status.missing.join(", ")}`);
+  }
+
+  return {
+    apiKey: process.env.WORKOS_API_KEY!,
+    orgId: process.env.CODEPET_WORKOS_ORG_ID!,
+    adminEmails: parseAdminEmails(process.env.CODEPET_ADMIN_EMAILS),
+    studentRoleSlug: process.env.CODEPET_STUDENT_ROLE_SLUG ?? "student",
+    adminRoleSlug: process.env.CODEPET_ADMIN_ROLE_SLUG ?? "admin",
+  };
+}
+
+export function getWorkOSClient() {
+  if (!workosClient) {
+    workosClient = new WorkOS(getLabsConfig().apiKey);
+  }
+
+  return workosClient;
+}
+
+export async function markLabsInterest(userId: string) {
+  const workos = getWorkOSClient();
+  const user = await workos.userManagement.getUser(userId);
+
+  if (user.metadata.labsStatus) {
+    return;
+  }
+
+  await workos.userManagement.updateUser({
+    userId,
+    metadata: {
+      labsStatus: "pending",
+      labsJoinedAt: new Date().toISOString(),
+      labsSource: "codepet-labs",
+    },
+  });
+}
+
+export async function getCurrentLabsUser() {
+  const { user } = await withAuth({ ensureSignedIn: true });
+  return getWorkOSClient().userManagement.getUser(user.id);
+}
+
+export async function requireLabsAdmin() {
+  const session = await withAuth({ ensureSignedIn: true });
+  const user = await getWorkOSClient().userManagement.getUser(session.user.id);
+
+  if (!isAdminEmail(user.email)) {
+    throw new Error("Not authorized for Labs admin.");
+  }
+
+  return user;
+}
+
+export async function getLabsMembership(userId: string) {
+  const config = getLabsConfig();
+  const memberships =
+    await getWorkOSClient().userManagement.listOrganizationMemberships({
+      organizationId: config.orgId,
+      userId,
+      statuses: ["active", "inactive", "pending"],
+      limit: 10,
+    });
+
+  return memberships.data[0] ?? null;
+}
+
+export async function getLabsDirectory() {
+  const config = getLabsConfig();
+  const workos = getWorkOSClient();
+
+  const [users, memberships] = await Promise.all([
+    workos.userManagement.listUsers({ limit: 100, order: "desc" }),
+    workos.userManagement.listOrganizationMemberships({
+      organizationId: config.orgId,
+      statuses: ["active", "inactive", "pending"],
+      limit: 100,
+    }),
+  ]);
+
+  const usersById = new Map(users.data.map((user) => [user.id, toLabsUser(user)]));
+  const members = memberships.data.map((membership) => {
+    const user = usersById.get(membership.userId);
+
+    return {
+      ...(user ?? emptyLabsUser(membership.userId)),
+      membershipId: membership.id,
+      membershipStatus: membership.status,
+      role: membership.role.slug,
+      roles: membership.roles?.map((role) => role.slug) ?? [membership.role.slug],
+      memberSince: membership.createdAt,
+    };
+  });
+  const memberIds = new Set(members.map((member) => member.id));
+  const pendingUsers = users.data
+    .map(toLabsUser)
+    .filter((user) => user.labsStatus === "pending" && !memberIds.has(user.id));
+  const archivedUsers = users.data
+    .map(toLabsUser)
+    .filter((user) => user.labsStatus === "not_now" && !memberIds.has(user.id));
+
+  return {
+    pendingUsers,
+    activeMembers: members.filter((member) => member.membershipStatus === "active"),
+    inactiveMembers: members.filter(
+      (member) => member.membershipStatus !== "active",
+    ),
+    archivedUsers,
+  };
+}
+
+export function isAdminEmail(email: string) {
+  const config = getLabsConfig();
+  const normalized = email.trim().toLowerCase();
+
+  return config.adminEmails.includes(normalized);
+}
+
+function parseAdminEmails(value: string | undefined) {
+  return (value ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function toLabsUser(user: Awaited<ReturnType<WorkOS["userManagement"]["getUser"]>>) {
+  return {
+    id: user.id,
+    name: [user.firstName, user.lastName].filter(Boolean).join(" ") || "Unknown",
+    email: user.email,
+    githubUsername: user.metadata.githubUsername ?? null,
+    labsStatus: user.metadata.labsStatus ?? null,
+    createdAt: user.createdAt,
+    lastSignInAt: user.lastSignInAt,
+  };
+}
+
+function emptyLabsUser(userId: string): LabsUser {
+  return {
+    id: userId,
+    name: "Unknown",
+    email: "Unknown",
+    githubUsername: null,
+    labsStatus: null,
+    createdAt: "",
+    lastSignInAt: null,
+  };
+}
