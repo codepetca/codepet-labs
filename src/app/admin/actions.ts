@@ -18,7 +18,7 @@ export async function approveUser(formData: FormData) {
   await workos.userManagement.createOrganizationMembership({
     organizationId: config.orgId,
     userId,
-    roleSlug: config.studentRoleSlug,
+    roleSlug: config.builderRoleSlug,
   });
 
   await workos.userManagement.updateUser({

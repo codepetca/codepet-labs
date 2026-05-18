@@ -29,12 +29,12 @@ export default async function HubPage() {
         <section className="rounded-lg border border-border bg-card p-5 shadow-sm">
           <p className="text-sm font-medium text-muted">Labs hub</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
-            {isActiveMember ? "Approved" : "Pending"}
+            {isActiveMember ? "Builder access" : "Thanks for your interest"}
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
             {isActiveMember
               ? "You have access to the CodePet Labs workspace."
-              : "Your account is in review. Keep your GitHub handle current."}
+              : "We will review your profile. Keep your GitHub handle current."}
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <StatusChip label={membership?.role.slug ?? "pending"} />

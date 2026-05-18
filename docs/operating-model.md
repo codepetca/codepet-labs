@@ -1,6 +1,6 @@
 # Operating Model
 
-CodePet Labs runs as a small invite-only builder environment.
+CodePet Labs runs as a small reviewed builder environment.
 
 ## Boundaries
 

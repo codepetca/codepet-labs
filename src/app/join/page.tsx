@@ -15,8 +15,8 @@ export default function JoinPage() {
     <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <SectionHeading
         eyebrow="Join"
-        title="Invite-only"
-        description="Small. Optional. Experimental."
+        title="Join Labs"
+        description="Anyone can start. Builders are chosen from the interest list."
       />
       <div className="mt-5 flex flex-wrap gap-3">
         <Link
@@ -37,7 +37,7 @@ export default function JoinPage() {
         <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
           <Image
             src="/images/visual-join.svg"
-            alt="Invite flow from pick to build to demo"
+            alt="Join flow from pick to build to demo"
             width={640}
             height={420}
             className="aspect-[16/10] w-full object-cover"

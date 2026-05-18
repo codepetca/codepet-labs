@@ -2,7 +2,7 @@
 
 CodePet Labs is an independent AI-native student software lab/studio connected to the Pika ecosystem.
 
-It is not a school club, formal class, or employment program. It is a small invite-only builder environment where motivated students learn modern software development by building Pika-adjacent tools, prototypes, and experiments.
+It is not a school club, formal class, or employment program. It is a small reviewed builder environment where motivated students learn modern software development by building Pika-adjacent tools, prototypes, and experiments.
 
 ## Run Locally
 
@@ -42,7 +42,7 @@ WorkOS for authentication and organization membership.
 
 Labs has a lightweight WorkOS-backed approval flow:
 
-- `/join` sends students to AuthKit sign-up.
+- `/join` sends interested builders to AuthKit sign-up.
 - `/hub` lets signed-in users add their GitHub username and see approval status.
 - `/admin` lets allowlisted admins approve, pause, reactivate, or hide members.
 
@@ -55,6 +55,8 @@ WORKOS_COOKIE_PASSWORD=
 WORKOS_REDIRECT_URI=http://localhost:3000/callback
 CODEPET_WORKOS_ORG_ID=
 CODEPET_ADMIN_EMAILS=you@example.com
+CODEPET_BUILDER_ROLE_SLUG=builder
+CODEPET_ADMIN_ROLE_SLUG=admin
 ```
 
 See `.env.example` and `docs/member-management.md` for the full setup.

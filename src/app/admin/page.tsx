@@ -55,12 +55,12 @@ function AdminDashboard({
         </h1>
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           <Metric label="Pending" value={directory.pendingUsers.length} />
-          <Metric label="Active" value={directory.activeMembers.length} />
+          <Metric label="Builders" value={directory.activeMembers.length} />
           <Metric label="Paused" value={directory.inactiveMembers.length} />
         </div>
       </section>
 
-      <AdminSection title="Potential members">
+      <AdminSection title="Interested people">
         {directory.pendingUsers.length ? (
           directory.pendingUsers.map((user) => (
             <UserCard key={user.id} user={user}>
@@ -79,7 +79,7 @@ function AdminDashboard({
         )}
       </AdminSection>
 
-      <AdminSection title="Existing members">
+      <AdminSection title="Builders">
         {directory.activeMembers.length ? (
           directory.activeMembers.map((member) => (
             <MemberCard key={member.membershipId} member={member}>
@@ -92,9 +92,9 @@ function AdminDashboard({
                 <input
                   type="hidden"
                   name="roleSlug"
-                  value={config.studentRoleSlug}
+                  value={config.builderRoleSlug}
                 />
-                <ActionButton label="Student" />
+                <ActionButton label="Builder" />
               </form>
               <form action={setMemberRole}>
                 <input

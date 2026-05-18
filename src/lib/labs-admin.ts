@@ -5,7 +5,7 @@ export type LabsConfig = {
   apiKey: string;
   orgId: string;
   adminEmails: string[];
-  studentRoleSlug: string;
+  builderRoleSlug: string;
   adminRoleSlug: string;
 };
 
@@ -56,7 +56,7 @@ export function getLabsConfig(): LabsConfig {
     apiKey: process.env.WORKOS_API_KEY!,
     orgId: process.env.CODEPET_WORKOS_ORG_ID!,
     adminEmails: parseAdminEmails(process.env.CODEPET_ADMIN_EMAILS),
-    studentRoleSlug: process.env.CODEPET_STUDENT_ROLE_SLUG ?? "student",
+    builderRoleSlug: process.env.CODEPET_BUILDER_ROLE_SLUG ?? "builder",
     adminRoleSlug: process.env.CODEPET_ADMIN_ROLE_SLUG ?? "admin",
   };
 }

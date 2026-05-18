@@ -4,10 +4,10 @@ CodePet Labs uses WorkOS as the member source of truth.
 
 ## Flow
 
-1. A student clicks **Join with GitHub**.
+1. An interested builder clicks **Join with GitHub**.
 2. WorkOS AuthKit creates the user.
 3. The Labs callback marks the user as `pending`.
-4. The student adds their GitHub username in `/hub`.
+4. The user adds their GitHub username in `/hub`.
 5. An admin reviews `/admin`.
 6. Approval creates a CodePet organization membership.
 
@@ -16,7 +16,7 @@ No separate database is needed for the first version.
 ## Admin States
 
 - `pending`: signed up and waiting for review.
-- `approved`: added to the CodePet WorkOS organization.
+- `approved`: added to the CodePet WorkOS organization as a builder.
 - `not_now`: hidden from the main pending queue.
 - `inactive`: org membership is paused in WorkOS.
 
@@ -27,7 +27,7 @@ No separate database is needed for the first version.
 - Add redirect URI: `/callback`.
 - Set the sign-in endpoint to `/login`.
 - Create the CodePet Labs organization.
-- Create `student` and `admin` role slugs, or update the env vars.
+- Create `builder` and `admin` role slugs, or update the env vars.
 
 ## Environment Variables
 
