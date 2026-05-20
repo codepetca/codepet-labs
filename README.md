@@ -52,7 +52,7 @@ Set these environment variables locally and in Vercel:
 WORKOS_API_KEY=
 WORKOS_CLIENT_ID=
 WORKOS_COOKIE_PASSWORD=
-WORKOS_REDIRECT_URI=http://localhost:3000/callback
+NEXT_PUBLIC_WORKOS_REDIRECT_URI=http://localhost:3000/callback
 CODEPET_WORKOS_ORG_ID=
 CODEPET_ADMIN_EMAILS=you@example.com
 CODEPET_BUILDER_ROLE_SLUG=builder

@@ -26,6 +26,7 @@ No separate database is needed for the first version.
 - Enable AuthKit.
 - Enable GitHub Social Login.
 - Add redirect URI: `/callback`.
+- Set `NEXT_PUBLIC_WORKOS_REDIRECT_URI` to the full callback URL.
 - Set the sign-in endpoint to `/login`.
 - Create the CodePet Labs organization.
 - Create `builder` and `admin` role slugs, or update the env vars.

@@ -35,7 +35,7 @@ export function getLabsConfigStatus() {
     "WORKOS_API_KEY",
     "WORKOS_CLIENT_ID",
     "WORKOS_COOKIE_PASSWORD",
-    "WORKOS_REDIRECT_URI",
+    "NEXT_PUBLIC_WORKOS_REDIRECT_URI",
     "CODEPET_WORKOS_ORG_ID",
     "CODEPET_ADMIN_EMAILS",
   ].filter((key) => !process.env[key]);
