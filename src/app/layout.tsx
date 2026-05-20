@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   title: "CodePet Labs",
   description:
     "An AI-native software lab exploring educational tools around the Pika ecosystem.",
+  icons: {
+    icon: "/images/codepet-paw-badge.svg",
+    apple: "/images/codepet-paw-badge.png",
+  },
 };
 
 export default function RootLayout({
