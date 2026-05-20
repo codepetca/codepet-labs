@@ -19,20 +19,11 @@ export function SiteHeader() {
             className="grid size-10 place-items-center rounded-md border border-border bg-surface"
           >
             <Image
-              src="/images/paw-light.svg"
+              src="/images/codepet-paw-badge.svg"
               alt=""
-              width={24}
-              height={24}
-              priority
-              className="size-6 dark:hidden"
-            />
-            <Image
-              src="/images/paw-dark.svg"
-              alt=""
-              width={24}
-              height={24}
-              priority
-              className="hidden size-6 dark:block"
+              width={32}
+              height={32}
+              className="size-8"
             />
           </span>
         </Link>
