@@ -1,3 +1,4 @@
+import { signOut } from "@workos-inc/authkit-nextjs";
 import Link from "next/link";
 
 import { saveGithubUsername } from "@/app/hub/actions";
@@ -113,12 +114,14 @@ function GitHubRequired({ email }: { email: string }) {
           You are signed in as {email}. Sign out, then use GitHub to continue.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link
-            href="/logout"
-            className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
-          >
-            Sign out
-          </Link>
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+            >
+              Sign out
+            </button>
+          </form>
           <Link
             href="/"
             className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
@@ -129,6 +132,12 @@ function GitHubRequired({ email }: { email: string }) {
       </section>
     </main>
   );
+}
+
+async function signOutAction() {
+  "use server";
+
+  await signOut({ returnTo: "/" });
 }
 
 function SetupNeeded({ missing }: { missing: string[] }) {
