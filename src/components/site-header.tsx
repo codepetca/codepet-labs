@@ -13,7 +13,11 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" aria-label="CodePet Labs home" className="shrink-0">
+        <Link
+          href="/"
+          aria-label="CodePet Labs home"
+          className="flex shrink-0 items-center gap-2"
+        >
           <span
             aria-hidden="true"
             className="grid size-10 place-items-center rounded-md border border-border bg-surface"
@@ -25,6 +29,9 @@ export function SiteHeader() {
               height={32}
               className="size-8"
             />
+          </span>
+          <span className="text-sm font-semibold text-foreground">
+            CodePet Labs
           </span>
         </Link>
 
