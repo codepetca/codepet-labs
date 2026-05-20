@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         destination: "/#join",
         permanent: false,
       },
+      {
+        source: "/showcase",
+        destination: "/projects",
+        permanent: false,
+      },
     ];
   },
 };

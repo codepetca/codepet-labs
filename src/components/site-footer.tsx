@@ -9,9 +9,6 @@ export function SiteFooter() {
           <Link href="/projects" className="hover:text-foreground">
             Projects
           </Link>
-          <Link href="/showcase" className="hover:text-foreground">
-            Showcase
-          </Link>
         </div>
       </div>
     </footer>

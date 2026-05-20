@@ -24,7 +24,7 @@ After that, load only the docs needed for the task.
 | Task | Read next |
 |---|---|
 | Public site UI or page copy | [`docs/ui-ux-style.md`](./ui-ux-style.md), relevant page/component |
-| Project cards or showcase content | [`docs/project-ideas.md`](./project-ideas.md), `content/projects.json`, `content/updates/` |
+| Project cards or demo content | [`docs/project-ideas.md`](./project-ideas.md), `content/projects.json`, `content/updates/` |
 | Labs purpose, positioning, or policy copy | [`docs/vision.md`](./vision.md), [`docs/operating-model.md`](./operating-model.md) |
 | Builder onboarding or student expectations | [`docs/onboarding.md`](./onboarding.md), [`docs/student-roles.md`](./student-roles.md), [`docs/ai-guidelines.md`](./ai-guidelines.md) |
 | Membership, join, hub, or admin flow | [`docs/member-management.md`](./member-management.md), `README.md` environment section |

@@ -3,7 +3,6 @@ import Link from "next/link";
 
 const navItems = [
   { href: "/projects", label: "Projects" },
-  { href: "/showcase", label: "Showcase" },
 ];
 
 export function SiteHeader() {

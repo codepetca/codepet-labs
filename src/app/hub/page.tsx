@@ -84,7 +84,6 @@ export default async function HubPage() {
             <HubLink href={config.discordInviteUrl} label="Join Discord" />
           ) : null}
           <HubLink href="/projects" label="Projects" />
-          <HubLink href="/showcase" label="Showcase" />
           {isAdmin ? <HubLink href="/admin" label="Admin" /> : null}
         </div>
       </section>

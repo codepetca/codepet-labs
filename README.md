@@ -32,7 +32,7 @@ pnpm build
 The public site is static-first. Content lives in local files:
 
 - `content/projects.json` stores project cards shown on `/projects`.
-- `content/updates/2026-summer-launch.md` is rendered on `/showcase`.
+- `content/updates/2026-summer-launch.md` is rendered on `/projects`.
 - `docs/` stores practical operating docs for students and reviewers.
 
 There is no database or production data dependency. The optional member hub uses
