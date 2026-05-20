@@ -4,8 +4,6 @@ import Link from "next/link";
 const navItems = [
   { href: "/projects", label: "Projects" },
   { href: "/showcase", label: "Showcase" },
-  { href: "/about", label: "About" },
-  { href: "/join", label: "Join" },
   { href: "/hub", label: "Hub" },
 ];
 

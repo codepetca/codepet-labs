@@ -6,14 +6,14 @@ export function SiteFooter() {
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <p>CodePet Labs</p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/about" className="hover:text-foreground">
-            About
-          </Link>
           <Link href="/projects" className="hover:text-foreground">
             Projects
           </Link>
-          <Link href="/join" className="hover:text-foreground">
-            Join
+          <Link href="/showcase" className="hover:text-foreground">
+            Showcase
+          </Link>
+          <Link href="/hub" className="hover:text-foreground">
+            Hub
           </Link>
         </div>
       </div>

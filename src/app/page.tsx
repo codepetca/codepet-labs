@@ -26,10 +26,24 @@ const focusAreas = [
   },
 ];
 
+const principles = [
+  "Learn by shipping",
+  "AI-assisted development",
+  "Async collaboration",
+  "Product thinking",
+  "Independent",
+  "Pika-adjacent",
+];
+
 export default function Home() {
+  const discordInviteUrl = process.env.CODEPET_DISCORD_INVITE_URL;
+
   return (
     <main>
-      <section className="mx-auto grid w-full max-w-5xl gap-7 px-4 py-8 sm:px-6 sm:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <section
+        id="join"
+        className="mx-auto grid w-full max-w-5xl gap-7 px-4 py-8 sm:px-6 sm:py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"
+      >
         <div className="max-w-3xl">
           <h1 className="text-4xl font-semibold tracking-normal text-foreground sm:text-6xl">
             CodePet Labs
@@ -44,17 +58,27 @@ export default function Home() {
           />
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/projects"
+              href="/signup"
               className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+            >
+              Join with GitHub
+            </Link>
+            <Link
+              href="/projects"
+              className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
             >
               View projects
             </Link>
-            <Link
-              href="/join"
-              className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
-            >
-              Join
-            </Link>
+            {discordInviteUrl ? (
+              <Link
+                href={discordInviteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
+              >
+                Join Discord
+              </Link>
+            ) : null}
           </div>
         </div>
 
@@ -68,12 +92,28 @@ export default function Home() {
         />
       </section>
 
+      <section id="about" className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
+        <div className="grid gap-3 sm:grid-cols-[0.8fr_1.2fr] sm:items-start">
+          <SectionHeading title="Build. Verify. Ship." />
+          <div className="grid gap-3 sm:grid-cols-2">
+            {principles.map((principle) => (
+              <article
+                key={principle}
+                className="rounded-lg border border-border bg-card p-4 shadow-sm"
+              >
+                <h2 className="text-base font-semibold text-foreground">
+                  {principle}
+                </h2>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="border-y border-border bg-surface/75">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading
-              title="Five tracks"
-            />
+            <SectionHeading title="Five tracks" />
             <Link
               href="/projects"
               className="text-sm font-semibold text-accent hover:underline"

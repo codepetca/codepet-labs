@@ -42,7 +42,7 @@ WorkOS for authentication and organization membership.
 
 Labs has a lightweight WorkOS-backed approval flow:
 
-- `/join` sends interested builders to AuthKit sign-up.
+- The home page sends interested builders to AuthKit sign-up.
 - `/hub` lets signed-in users add their GitHub username and see approval status.
 - `/admin` lets allowlisted admins approve, pause, reactivate, or hide members.
 
@@ -89,7 +89,7 @@ This app is ready for Vercel:
 3. Keep the default Next.js settings.
 4. Deploy.
 
-Add the WorkOS environment variables above before enabling the join/member hub
+Add the WorkOS environment variables above before enabling the home/member hub
 flow in production.
 
 ## Docs
