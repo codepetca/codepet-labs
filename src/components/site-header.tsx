@@ -4,7 +4,6 @@ import Link from "next/link";
 const navItems = [
   { href: "/projects", label: "Projects" },
   { href: "/showcase", label: "Showcase" },
-  { href: "/hub", label: "Hub" },
 ];
 
 export function SiteHeader() {
@@ -46,8 +45,35 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/hub"
+            aria-label="Profile"
+            title="Profile"
+            className="grid size-10 shrink-0 place-items-center rounded-md text-muted transition hover:bg-card-soft hover:text-foreground"
+          >
+            <ProfileIcon />
+          </Link>
         </nav>
       </div>
     </header>
+  );
+}
+
+function ProfileIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-5"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="1.8"
+    >
+      <circle cx="12" cy="8" r="3.25" />
+      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+      <circle cx="12" cy="12" r="10" />
+    </svg>
   );
 }

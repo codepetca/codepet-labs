@@ -12,9 +12,6 @@ export function SiteFooter() {
           <Link href="/showcase" className="hover:text-foreground">
             Showcase
           </Link>
-          <Link href="/hub" className="hover:text-foreground">
-            Hub
-          </Link>
         </div>
       </div>
     </footer>
