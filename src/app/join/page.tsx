@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { SectionHeading } from "@/components/section-heading";
 
@@ -14,15 +15,29 @@ export default function JoinPage() {
     <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <SectionHeading
         eyebrow="Join"
-        title="Invite-only"
-        description="Small. Optional. Experimental."
+        title="Join Labs"
+        description="Anyone can start. Builders are chosen from the interest list."
       />
+      <div className="mt-5 flex flex-wrap gap-3">
+        <Link
+          href="/signup"
+          className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-5 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+        >
+          Join with GitHub
+        </Link>
+        <Link
+          href="/hub"
+          className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
+        >
+          Member hub
+        </Link>
+      </div>
 
       <div className="mt-7 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <section className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
           <Image
             src="/images/visual-join.svg"
-            alt="Invite flow from pick to build to demo"
+            alt="Join flow from pick to build to demo"
             width={640}
             height={420}
             className="aspect-[16/10] w-full object-cover"

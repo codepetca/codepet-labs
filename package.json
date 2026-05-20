@@ -6,9 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "discord:setup": "node scripts/setup-discord.mjs",
     "lint": "eslint"
   },
   "dependencies": {
+    "@workos-inc/authkit-nextjs": "^4.1.0",
+    "@workos-inc/node": "^9.3.0",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"

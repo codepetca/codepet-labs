@@ -6,6 +6,7 @@ const navItems = [
   { href: "/showcase", label: "Showcase" },
   { href: "/about", label: "About" },
   { href: "/join", label: "Join" },
+  { href: "/hub", label: "Hub" },
 ];
 
 export function SiteHeader() {
