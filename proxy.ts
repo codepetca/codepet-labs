@@ -1,6 +1,6 @@
-import { authkitMiddleware } from "@workos-inc/authkit-nextjs";
+import { authkitProxy } from "@workos-inc/authkit-nextjs";
 
-export default authkitMiddleware();
+export default authkitProxy();
 
 export const config = {
   matcher: ["/admin/:path*", "/hub/:path*"],
