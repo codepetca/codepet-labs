@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { HeaderUserArea } from "@/components/header-user-menu";
+
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
@@ -16,14 +18,7 @@ export function SiteHeader() {
           aria-label="Main navigation"
           className="-mx-1 flex min-w-0 gap-1 overflow-x-auto pb-1 text-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
-          <a
-            href="/profile"
-            aria-label="Profile"
-            title="Profile"
-            className="grid size-10 shrink-0 place-items-center rounded-md text-muted transition hover:bg-card-soft hover:text-foreground"
-          >
-            <ProfileIcon />
-          </a>
+          <HeaderUserArea />
         </nav>
       </div>
     </header>
@@ -39,25 +34,6 @@ function SimplePawIcon() {
       fill="currentColor"
     >
       <path d="M234.5 92.9c14.3 42.9-.3 86.2-32.6 96.8s-70.1-15.6-84.4-58.5.3-86.2 32.6-96.8 70.1 15.6 84.4 58.5zM100.4 198.6c18.9 32.4 14.3 70.1-10.2 84.1s-59.7-.9-78.5-33.3-14.3-70.1 10.2-84.1 59.7.9 78.5 33.3zM69.2 401.2C121.6 259.9 214.7 224 256 224s134.4 35.9 186.8 177.2c3.6 9.7 5.2 20.1 5.2 30.5v1.6c0 25.8-20.9 46.7-46.7 46.7-11.5 0-22.9-1.4-34-4.2l-88-22c-15.3-3.8-31.3-3.8-46.6 0l-88 22c-11.1 2.8-22.5 4.2-34 4.2-25.8 0-46.7-20.9-46.7-46.7v-1.6c0-10.4 1.6-20.8 5.2-30.5zM421.8 282.7c-24.5-14-29.1-51.7-10.2-84.1s54-47.3 78.5-33.3 29.1 51.7 10.2 84.1-54 47.3-78.5 33.3zM310.1 189.7c-32.3-10.6-46.9-53.9-32.6-96.8s52.1-69.1 84.4-58.5 46.9 53.9 32.6 96.8-52.1 69.1-84.4 58.5z" />
-    </svg>
-  );
-}
-
-function ProfileIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="size-5"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="1.8"
-    >
-      <circle cx="12" cy="8" r="3.25" />
-      <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
-      <circle cx="12" cy="12" r="10" />
     </svg>
   );
 }
