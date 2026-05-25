@@ -38,36 +38,60 @@ export default async function HubPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
-      <section className="rounded-lg border border-border bg-card p-5 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-normal text-accent">
-              Approved workspace
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
-              Builder hub
-            </h1>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
-              Links for CodePet Labs builders.
-            </p>
-          </div>
-          <StatusChip label={isApprovedBuilder ? "builder" : "admin"} />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="font-mono text-xs font-semibold uppercase tracking-normal text-accent">
+            Approved workspace
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
+            Builder hub
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
+            Start here after approval.
+          </p>
         </div>
+        <StatusChip label={isApprovedBuilder ? "builder" : "admin"} />
+      </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {isApprovedBuilder && config.discordInviteUrl ? (
-            <HubLink
-              href={config.discordInviteUrl}
-              label="Join Discord"
-              external
-            />
-          ) : null}
-          <HubLink href="/projects" label="Projects" />
-          <HubLink href="/profile" label="Profile" />
-          {isAdmin ? <HubLink href="/admin" label="Admin" /> : null}
-        </div>
+      {isApprovedBuilder ? (
+        <DiscordSection inviteUrl={config.discordInviteUrl} />
+      ) : null}
+
+      <section className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <HubLink href="/projects" label="Projects" description="Current demos" />
+        <HubLink href="/profile" label="Profile" description="Status and GitHub" />
+        {isAdmin ? (
+          <HubLink href="/admin" label="Admin" description="Review builders" />
+        ) : null}
       </section>
     </main>
+  );
+}
+
+function DiscordSection({ inviteUrl }: { inviteUrl: string | null }) {
+  return (
+    <section className="mt-6 rounded-lg border border-border bg-card p-5 shadow-sm">
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Discord</h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
+            Quick questions and demos. Durable work stays in GitHub.
+          </p>
+        </div>
+        {inviteUrl ? (
+          <a
+            href={inviteUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-4 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+          >
+            Join Discord
+          </a>
+        ) : (
+          <StatusChip label="invite coming soon" />
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -100,28 +124,23 @@ function StatusChip({ label }: { label: string }) {
 }
 
 function HubLink({
+  description,
   href,
   label,
-  external = false,
 }: {
+  description: string;
   href: string;
   label: string;
-  external?: boolean;
 }) {
-  const className =
-    "inline-flex min-h-11 items-center rounded-md border border-border bg-card-soft px-3 py-3 text-sm font-semibold text-foreground transition hover:bg-surface";
-
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noreferrer" className={className}>
-        {label}
-      </a>
-    );
-  }
-
   return (
-    <Link href={href} className={className}>
-      {label}
+    <Link
+      href={href}
+      className="rounded-lg border border-border bg-card p-4 shadow-sm transition hover:bg-card-soft"
+    >
+      <span className="block text-sm font-semibold text-foreground">
+        {label}
+      </span>
+      <span className="mt-1 block text-sm text-muted">{description}</span>
     </Link>
   );
 }
