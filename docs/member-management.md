@@ -4,14 +4,16 @@ CodePet Labs uses WorkOS as the member source of truth.
 
 ## Flow
 
-1. An interested builder clicks **Join**.
+1. An interested builder clicks **Apply to Build**.
 2. WorkOS AuthKit authenticates the user with GitHub.
 3. The Labs callback confirms a linked GitHub OAuth identity.
-4. The callback marks GitHub-authenticated users as `pending`.
+4. The callback marks GitHub-authenticated users as `profile_required`.
 5. The callback or hub resolves the GitHub username when possible.
-6. An admin reviews `/admin`.
-7. Approval marks the user as an approved builder in WorkOS metadata.
-8. If Discord is configured, users can join from the home page.
+6. The user completes the short builder profile wizard in `/hub`.
+7. Profile completion marks the user as `pending`.
+8. An admin reviews `/admin`.
+9. Approval marks the user as an approved builder in WorkOS metadata.
+10. Approved builders see Discord and project links in `/hub`.
 
 No separate database is needed for the first version.
 
@@ -19,6 +21,7 @@ No separate database is needed for the first version.
 
 - `pending`: signed up and waiting for review.
 - `github_required`: signed in without a linked GitHub OAuth identity.
+- `profile_required`: signed in with GitHub and still needs the builder profile.
 - `approved`: approved as a CodePet Labs builder.
 - `not_now`: hidden from the main pending queue.
 - `inactive`: builder access is paused.
@@ -43,5 +46,5 @@ user metadata so Labs can stay small until organization roles or SSO are needed.
 Use `.env.example` as the template. `CODEPET_ADMIN_EMAILS` is a
 comma-separated allowlist for people who can open `/admin`.
 
-`CODEPET_DISCORD_INVITE_URL` is optional. If it is set, the home page shows a
-public **Join Discord** button.
+`CODEPET_DISCORD_INVITE_URL` is optional. If it is set, approved builders see
+the Discord link in `/hub`.

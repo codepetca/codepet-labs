@@ -13,6 +13,14 @@ import {
   type LabsUser,
   requireLabsAdmin,
 } from "@/lib/labs-admin";
+import {
+  getLabsOptionLabels,
+  LABS_AI_TOOL_OPTIONS,
+  LABS_AVAILABILITY_OPTIONS,
+  LABS_GITHUB_COMFORT_OPTIONS,
+  LABS_INTEREST_OPTIONS,
+  LABS_ROLE_OPTIONS,
+} from "@/lib/labs-state";
 
 export const dynamic = "force-dynamic";
 
@@ -47,14 +55,18 @@ function AdminDashboard({
         <h1 className="text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
           CodePet members
         </h1>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+        <div className="mt-5 grid gap-3 sm:grid-cols-4">
+          <Metric
+            label="Started"
+            value={directory.profileRequiredUsers.length}
+          />
           <Metric label="Pending" value={directory.pendingUsers.length} />
           <Metric label="Builders" value={directory.activeBuilders.length} />
           <Metric label="Paused" value={directory.inactiveBuilders.length} />
         </div>
       </section>
 
-      <AdminSection title="Interested people">
+      <AdminSection title="Applications">
         {directory.pendingUsers.length ? (
           directory.pendingUsers.map((user) => (
             <UserCard key={user.id} user={user}>
@@ -72,6 +84,19 @@ function AdminDashboard({
           <EmptyState label="No pending requests." />
         )}
       </AdminSection>
+
+      {directory.profileRequiredUsers.length ? (
+        <AdminSection title="Started">
+          {directory.profileRequiredUsers.map((user) => (
+            <UserCard key={user.id} user={user}>
+              <form action={markNotNow}>
+                <input type="hidden" name="userId" value={user.id} />
+                <ActionButton label="Not now" />
+              </form>
+            </UserCard>
+          ))}
+        </AdminSection>
+      ) : null}
 
       <AdminSection title="Builders">
         {directory.activeBuilders.length ? (
@@ -150,13 +175,16 @@ function UserCard({
 }
 
 function UserSummary({ user }: { user: LabsUser }) {
+  const contactEmail = user.contactEmail ?? user.email;
+
   return (
     <div>
       <p className="font-semibold text-foreground">{user.name}</p>
       <div className="mt-1 flex flex-wrap gap-2 text-sm text-muted">
-        <a href={`mailto:${user.email}`} className="hover:text-foreground">
-          {user.email}
+        <a href={`mailto:${contactEmail}`} className="hover:text-foreground">
+          {contactEmail}
         </a>
+        {contactEmail !== user.email ? <span>Auth: {user.email}</span> : null}
         {user.githubUsername ? (
           <a
             href={`https://github.com/${user.githubUsername}`}
@@ -167,7 +195,55 @@ function UserSummary({ user }: { user: LabsUser }) {
         ) : (
           <span>No GitHub handle</span>
         )}
+        {user.affiliation ? <span>{user.affiliation}</span> : null}
       </div>
+      {user.labsProfileCompletedAt ? <ProfileDetails user={user} /> : null}
+    </div>
+  );
+}
+
+function ProfileDetails({ user }: { user: LabsUser }) {
+  return (
+    <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+      <ProfileLine
+        label="Interests"
+        value={formatOptionLabels(user.interests, LABS_INTEREST_OPTIONS)}
+      />
+      <ProfileLine
+        label="GitHub comfort"
+        value={formatOptionLabels(
+          user.githubComfort,
+          LABS_GITHUB_COMFORT_OPTIONS,
+        )}
+      />
+      <ProfileLine
+        label="AI"
+        value={formatOptionLabels(user.aiTools, LABS_AI_TOOL_OPTIONS)}
+      />
+      <ProfileLine
+        label="Availability"
+        value={formatOptionLabels(user.availability, LABS_AVAILABILITY_OPTIONS)}
+      />
+      <ProfileLine
+        label="Role"
+        value={formatOptionLabels(user.preferredRole, LABS_ROLE_OPTIONS)}
+      />
+      <ProfileLine label="Referrer" value={user.referrer || "Not added"} />
+      {user.buildGoal ? (
+        <div className="sm:col-span-2">
+          <dt className="font-medium text-foreground">Goal</dt>
+          <dd className="mt-1 leading-6 text-muted">{user.buildGoal}</dd>
+        </div>
+      ) : null}
+    </dl>
+  );
+}
+
+function ProfileLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="font-medium text-foreground">{label}</dt>
+      <dd className="mt-1 text-muted">{value}</dd>
     </div>
   );
 }
@@ -254,4 +330,13 @@ function AccessProblem({ error }: { error: unknown }) {
       </section>
     </main>
   );
+}
+
+function formatOptionLabels(
+  storedValue: string | null,
+  options: Parameters<typeof getLabsOptionLabels>[1],
+) {
+  const labels = getLabsOptionLabels(storedValue, options);
+
+  return labels.length ? labels.join(", ") : "Not added";
 }

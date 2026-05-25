@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getLabsStatusAfterProfileSubmit,
   getLabsDirectoryBuckets,
   getNextLabsStatus,
+  hasCompletedLabsProfile,
   isGithubAuthenticationMethod,
+  parseBuilderProfileForm,
   parseGithubApiUsername,
   parseGithubUsername,
 } from "../../src/lib/labs-state";
@@ -18,9 +21,9 @@ describe("Labs state helpers", () => {
     expect(isGithubAuthenticationMethod(undefined)).toBe(false);
   });
 
-  it("moves GitHub-authenticated interested users into pending review", () => {
-    expect(getNextLabsStatus(undefined, true)).toBe("pending");
-    expect(getNextLabsStatus("github_required", true)).toBe("pending");
+  it("moves GitHub-authenticated interested users into profile setup", () => {
+    expect(getNextLabsStatus(undefined, true)).toBe("profile_required");
+    expect(getNextLabsStatus("github_required", true)).toBe("profile_required");
     expect(getNextLabsStatus("approved", true)).toBe("approved");
     expect(getNextLabsStatus("not_now", true)).toBe("not_now");
   });
@@ -33,6 +36,7 @@ describe("Labs state helpers", () => {
 
   it("buckets Labs users by metadata status", () => {
     const users = [
+      { id: "user_started", labsStatus: "profile_required" },
       { id: "user_pending", labsStatus: "pending" },
       { id: "user_builder", labsStatus: "approved" },
       { id: "user_paused", labsStatus: "inactive" },
@@ -42,11 +46,69 @@ describe("Labs state helpers", () => {
     ];
 
     expect(getLabsDirectoryBuckets(users)).toEqual({
-      pendingUsers: [users[0]],
-      activeBuilders: [users[1]],
-      inactiveBuilders: [users[2]],
-      archivedUsers: [users[3]],
+      profileRequiredUsers: [users[0]],
+      pendingUsers: [users[1]],
+      activeBuilders: [users[2]],
+      inactiveBuilders: [users[3]],
+      archivedUsers: [users[4]],
     });
+  });
+
+  it("moves completed profiles into pending review", () => {
+    expect(getLabsStatusAfterProfileSubmit("profile_required")).toBe("pending");
+    expect(getLabsStatusAfterProfileSubmit("github_required")).toBe("pending");
+    expect(getLabsStatusAfterProfileSubmit("approved")).toBe("approved");
+    expect(getLabsStatusAfterProfileSubmit("inactive")).toBe("inactive");
+    expect(getLabsStatusAfterProfileSubmit("not_now")).toBe("not_now");
+  });
+
+  it("parses the builder profile wizard fields", () => {
+    const formData = new FormData();
+
+    formData.set("preferredName", " Jane  Smith ");
+    formData.set("contactEmail", "JANE@EXAMPLE.COM");
+    formData.set("affiliation", " Example High ");
+    formData.set("referrer", " Alex ");
+    formData.append("interests", "ui");
+    formData.append("interests", "ai");
+    formData.set("buildGoal", " Learn team workflow. ");
+    formData.set("githubComfort", "basics");
+    formData.append("aiTools", "none");
+    formData.append("aiTools", "chatgpt");
+    formData.set("availability", "steady");
+    formData.set("preferredRole", "builder");
+
+    expect(parseBuilderProfileForm(formData)).toEqual({
+      preferredName: "Jane Smith",
+      contactEmail: "jane@example.com",
+      affiliation: "Example High",
+      referrer: "Alex",
+      interests: "ui,ai",
+      buildGoal: "Learn team workflow.",
+      githubComfort: "basics",
+      aiTools: "chatgpt",
+      availability: "steady",
+      preferredRole: "builder",
+    });
+  });
+
+  it("detects completed builder profiles", () => {
+    expect(
+      hasCompletedLabsProfile({
+        preferredName: "Jane",
+        contactEmail: "jane@example.com",
+        interests: "ui",
+        githubComfort: "basics",
+        availability: "steady",
+        preferredRole: "builder",
+      }),
+    ).toBe(true);
+    expect(
+      hasCompletedLabsProfile({
+        preferredName: "Jane",
+        contactEmail: "jane@example.com",
+      }),
+    ).toBe(false);
   });
 
   it("normalizes valid GitHub usernames", () => {

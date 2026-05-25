@@ -1,13 +1,26 @@
 import { signOut } from "@workos-inc/authkit-nextjs";
 import Link from "next/link";
 
+import { saveBuilderProfile } from "@/app/hub/actions";
+import { BuilderProfileWizard } from "@/components/builder-profile-wizard";
 import {
   ensureLabsGithubUsername,
   getCurrentLabsUser,
+  getLabsConfig,
   getLabsConfigStatus,
   getLabsGithubIdentity,
   isAdminEmail,
 } from "@/lib/labs-admin";
+import {
+  getLabsOptionLabels,
+  getLabsProfileFormValues,
+  hasCompletedLabsProfile,
+  LABS_AI_TOOL_OPTIONS,
+  LABS_AVAILABILITY_OPTIONS,
+  LABS_GITHUB_COMFORT_OPTIONS,
+  LABS_INTEREST_OPTIONS,
+  LABS_ROLE_OPTIONS,
+} from "@/lib/labs-state";
 
 export const dynamic = "force-dynamic";
 
@@ -27,23 +40,41 @@ export default async function HubPage() {
 
   user = await ensureLabsGithubUsername(user, githubIdentity);
 
+  const config = getLabsConfig();
   const isAdmin = isAdminEmail(user.email);
-  const labsStatus = user.metadata.labsStatus ?? "pending";
+  const labsStatus = user.metadata.labsStatus ?? "profile_required";
   const isApprovedBuilder = labsStatus === "approved";
   const githubUsername = user.metadata.githubUsername;
+  const profileComplete = hasCompletedLabsProfile(user.metadata);
   const emailInitial = getEmailInitial(user.email);
+
+  if (
+    labsStatus === "profile_required" ||
+    (labsStatus === "pending" && !profileComplete)
+  ) {
+    return (
+      <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+        <BuilderProfileWizard
+          action={saveBuilderProfile}
+          githubUsername={githubUsername}
+          initialValues={getLabsProfileFormValues(user.metadata, {
+            email: user.email,
+            name: getWorkOSName(user),
+          })}
+        />
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
         <section className="rounded-lg border border-border bg-card p-5 shadow-sm">
           <h1 className="text-3xl font-semibold tracking-normal text-foreground sm:text-4xl">
-            {isApprovedBuilder ? "Builder access" : "Thanks for your interest"}
+            {getHubTitle(labsStatus)}
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
-            {isApprovedBuilder
-              ? "You have access to the CodePet Labs workspace."
-              : "We will review your profile."}
+            {getHubMessage(labsStatus)}
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             <StatusChip label={isApprovedBuilder ? "builder" : labsStatus} />
@@ -67,19 +98,51 @@ export default async function HubPage() {
             </div>
           </div>
           <dl className="mt-4 grid gap-3 text-sm">
-            <div className="rounded-md border border-border bg-card-soft p-3">
-              <dt className="text-muted">GitHub auth</dt>
-              <dd className="mt-1 font-medium text-foreground">Verified</dd>
-            </div>
-            <div className="rounded-md border border-border bg-card-soft p-3">
-              <dt className="text-muted">GitHub</dt>
-              <dd className="mt-1 font-medium text-foreground">
-                {githubUsername ? `@${githubUsername}` : "Not added"}
-              </dd>
-            </div>
+            <SummaryRow label="GitHub auth" value="Verified" />
+            <SummaryRow
+              label="GitHub"
+              value={githubUsername ? `@${githubUsername}` : "Not added"}
+            />
+            <SummaryRow
+              label="Interests"
+              value={formatList(
+                getLabsOptionLabels(
+                  user.metadata.interests,
+                  LABS_INTEREST_OPTIONS,
+                ),
+              )}
+            />
+            <SummaryRow
+              label="GitHub comfort"
+              value={formatList(
+                getLabsOptionLabels(
+                  user.metadata.githubComfort,
+                  LABS_GITHUB_COMFORT_OPTIONS,
+                ),
+              )}
+            />
           </dl>
         </section>
       </div>
+
+      <section className="mt-4 rounded-lg border border-border bg-card p-5 shadow-sm">
+        <h2 className="text-base font-semibold text-foreground">
+          {isApprovedBuilder ? "Next steps" : "Review"}
+        </h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {isApprovedBuilder && config.discordInviteUrl ? (
+            <HubLink
+              href={config.discordInviteUrl}
+              label="Join Discord"
+              external
+            />
+          ) : null}
+          <HubLink href="/#tracks" label="Projects" />
+          {isAdmin ? <HubLink href="/admin" label="Admin" /> : null}
+        </div>
+      </section>
+
+      {profileComplete ? <ApplicationSummary metadata={user.metadata} /> : null}
     </main>
   );
 }
@@ -149,6 +212,123 @@ function StatusChip({ label }: { label: string }) {
   );
 }
 
+function HubLink({
+  href,
+  label,
+  external = false,
+}: {
+  href: string;
+  label: string;
+  external?: boolean;
+}) {
+  const className =
+    "rounded-md border border-border bg-card-soft px-3 py-3 text-sm font-semibold text-foreground transition hover:bg-surface";
+
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className={className}>
+        {label}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
+  );
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-t border-border pt-3 first:border-t-0 first:pt-0">
+      <dt className="text-muted">{label}</dt>
+      <dd className="mt-1 font-medium text-foreground">{value}</dd>
+    </div>
+  );
+}
+
+function ApplicationSummary({
+  metadata,
+}: {
+  metadata: Record<string, string | null | undefined>;
+}) {
+  return (
+    <section className="mt-4 rounded-lg border border-border bg-card p-5 shadow-sm">
+      <h2 className="text-base font-semibold text-foreground">Application</h2>
+      <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+        <SummaryRow
+          label="Preferred role"
+          value={formatList(
+            getLabsOptionLabels(metadata.preferredRole, LABS_ROLE_OPTIONS),
+          )}
+        />
+        <SummaryRow
+          label="Availability"
+          value={formatList(
+            getLabsOptionLabels(metadata.availability, LABS_AVAILABILITY_OPTIONS),
+          )}
+        />
+        <SummaryRow
+          label="AI tools"
+          value={formatList(
+            getLabsOptionLabels(metadata.aiTools, LABS_AI_TOOL_OPTIONS),
+          )}
+        />
+        <SummaryRow label="Referrer" value={metadata.referrer || "Not added"} />
+      </dl>
+      {metadata.buildGoal ? (
+        <p className="mt-4 border-t border-border pt-4 text-sm leading-6 text-muted">
+          {metadata.buildGoal}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
+function getHubTitle(status: string) {
+  if (status === "approved") {
+    return "Builder access";
+  }
+
+  if (status === "inactive") {
+    return "Access paused";
+  }
+
+  if (status === "not_now") {
+    return "Not this round";
+  }
+
+  return "Application sent";
+}
+
+function getHubMessage(status: string) {
+  if (status === "approved") {
+    return "You have access to the CodePet Labs workspace.";
+  }
+
+  if (status === "inactive") {
+    return "Your builder access is paused for now.";
+  }
+
+  if (status === "not_now") {
+    return "We are not adding this profile to the active builder group right now.";
+  }
+
+  return "We will review your profile before sharing builder links.";
+}
+
+function formatList(values: string[]) {
+  return values.length ? values.join(", ") : "Not added";
+}
+
 function getEmailInitial(email: string) {
   return email.trim().charAt(0).toUpperCase() || "?";
+}
+
+function getWorkOSName(user: {
+  firstName?: string | null;
+  lastName?: string | null;
+}) {
+  return [user.firstName, user.lastName].filter(Boolean).join(" ") || null;
 }

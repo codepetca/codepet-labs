@@ -21,6 +21,17 @@ export type LabsUser = {
   githubUsername: string | null;
   labsStatus: string | null;
   labsRole: string | null;
+  preferredName: string | null;
+  contactEmail: string | null;
+  affiliation: string | null;
+  referrer: string | null;
+  interests: string | null;
+  buildGoal: string | null;
+  githubComfort: string | null;
+  aiTools: string | null;
+  availability: string | null;
+  preferredRole: string | null;
+  labsProfileCompletedAt: string | null;
   createdAt: string;
   lastSignInAt: string | null;
 };
@@ -256,17 +267,34 @@ function hasSameMetadata(
 }
 
 function isGithubIdentity(identity: LabsIdentity) {
-  return identity.type === "OAuth" && isGithubAuthenticationMethod(identity.provider);
+  return (
+    identity.type === "OAuth" && isGithubAuthenticationMethod(identity.provider)
+  );
 }
 
 function toLabsUser(user: LabsWorkOSUser) {
+  const workosName =
+    [user.firstName, user.lastName].filter(Boolean).join(" ") || "Unknown";
+  const preferredName = user.metadata.preferredName ?? null;
+
   return {
     id: user.id,
-    name: [user.firstName, user.lastName].filter(Boolean).join(" ") || "Unknown",
+    name: preferredName ?? workosName,
     email: user.email,
     githubUsername: user.metadata.githubUsername ?? null,
     labsStatus: user.metadata.labsStatus ?? null,
     labsRole: user.metadata.labsRole ?? null,
+    preferredName,
+    contactEmail: user.metadata.contactEmail ?? null,
+    affiliation: user.metadata.affiliation ?? null,
+    referrer: user.metadata.referrer ?? null,
+    interests: user.metadata.interests ?? null,
+    buildGoal: user.metadata.buildGoal ?? null,
+    githubComfort: user.metadata.githubComfort ?? null,
+    aiTools: user.metadata.aiTools ?? null,
+    availability: user.metadata.availability ?? null,
+    preferredRole: user.metadata.preferredRole ?? null,
+    labsProfileCompletedAt: user.metadata.labsProfileCompletedAt ?? null,
     createdAt: user.createdAt,
     lastSignInAt: user.lastSignInAt,
   };
