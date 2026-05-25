@@ -55,11 +55,12 @@ WorkOS for authentication and lightweight approval metadata.
 
 Labs has a lightweight WorkOS-backed approval flow:
 
-- The home page sends interested builders to the WorkOS-protected hub.
+- The home page sends interested builders to the WorkOS sign-up flow.
 - AuthKit should be configured for GitHub Social Login only.
 - `/hub` requires a linked GitHub OAuth identity, records the GitHub username
-  when it can be resolved, and shows approval status.
+  when it can be resolved, and asks for a short builder profile before review.
 - `/admin` lets allowlisted admins approve, pause, reactivate, or hide builders.
+- Approved builders see Discord and project links in `/hub`.
 
 Set these environment variables locally and in Vercel:
 

@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { SectionHeading } from "@/components/section-heading";
 import { TrackCard } from "@/components/track-card";
 import type { ProjectCardProject } from "@/components/project-card";
@@ -9,8 +7,6 @@ import projects from "../../content/projects.json";
 const projectList = projects as ProjectCardProject[];
 
 export default function Home() {
-  const discordInviteUrl = process.env.CODEPET_DISCORD_INVITE_URL;
-
   return (
     <main>
       <section
@@ -26,21 +22,11 @@ export default function Home() {
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <a
-              href="/hub"
+              href="/signup"
               className="inline-flex min-h-16 items-center justify-center rounded-md bg-foreground px-10 py-5 text-xl font-semibold text-background transition hover:opacity-90 sm:min-w-44"
             >
-              Join
+              Apply to Build
             </a>
-            {discordInviteUrl ? (
-              <Link
-                href={discordInviteUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border border-border bg-surface px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-card-soft"
-              >
-                Join Discord
-              </Link>
-            ) : null}
           </div>
         </div>
       </section>
