@@ -52,87 +52,23 @@ const rolesToCreate = [
     ]),
   },
   { name: "Builder", color: 0x16a34a, permissions: "0" },
-  { name: "Tester", color: 0xf59e0b, permissions: "0" },
-  { name: "Pika User", color: 0x8b5cf6, permissions: "0" },
   { name: "AI Helper", color: 0x64748b, permissions: "0" },
 ];
 
 const layout = [
   {
-    name: "START HERE",
+    name: "CODEPET LABS",
     channels: [
-      {
-        name: "welcome",
-        topic: "Start here for the purpose of CodePet Labs and how to participate.",
-        readOnly: true,
-        starter:
-          "Welcome to CodePet Labs. This is a small builder space for Pika-adjacent prototypes, feedback, and experiments. Keep work lightweight, public-safe, and focused on mock-data demos.",
-      },
       {
         name: "announcements",
         topic: "Low-noise updates about CodePet Labs.",
         readOnly: true,
       },
       {
-        name: "rules",
-        topic: "Shared expectations for the server.",
-        readOnly: true,
+        name: "builders",
+        topic: "One small channel for questions, intros, demos, AI help, and quick feedback.",
         starter:
-          "Rules: be direct and respectful; do not post credentials, real student data, or production Pika details; use mock data; keep AI helpers clearly labeled; move durable decisions into GitHub or docs.",
-      },
-      {
-        name: "introductions",
-        topic: "Brief intros from builders, testers, and collaborators.",
-      },
-    ],
-  },
-  {
-    name: "CODEPET LABS",
-    channels: [
-      {
-        name: "feature-ideas",
-        topic: "Small, specific feature ideas. Include who it helps and what problem it solves.",
-        starter:
-          "Feature idea format: problem, who it helps, smallest useful version, and any screenshot or sketch. Keep ideas narrow enough to prototype.",
-      },
-      {
-        name: "bug-reports",
-        topic: "Bug reports for CodePet Labs prototypes and demos.",
-        starter:
-          "Bug format: what happened, what you expected, steps to reproduce, device/browser, and screenshot or short video when useful.",
-      },
-      {
-        name: "questions",
-        topic: "Questions about Labs projects, setup, ideas, and workflows.",
-      },
-      {
-        name: "show-and-tell",
-        topic: "Share demos, screenshots, prototypes, and shipped experiments.",
-      },
-      {
-        name: "roadmap",
-        topic: "Short roadmap notes and decisions. Keep detailed discussion in feature threads or GitHub.",
-        readOnly: true,
-      },
-    ],
-  },
-  {
-    name: "BUILDERS",
-    privateTo: ["Labs Admin", "Moderator", "Builder", "AI Helper"],
-    channels: [
-      {
-        name: "design-review",
-        topic: "Review flows, copy, layouts, and user-facing prototype decisions.",
-      },
-      {
-        name: "implementation-notes",
-        topic: "Technical notes, project tradeoffs, and build planning.",
-      },
-      {
-        name: "ai-builder-lab",
-        topic: "AI helper experiments for summaries, specs, critique, and backlog cleanup.",
-        starter:
-          "Use this channel for AI-assisted summaries, feature spec drafts, critique, and backlog cleanup. Do not paste secrets, real student data, or production-only details.",
+          "Welcome to CodePet Labs. Use this one channel for quick questions, intros, demos, and lightweight AI-assisted discussion. Keep durable work in GitHub. Do not post credentials, real student data, or production Pika details.",
       },
     ],
   },
@@ -140,7 +76,6 @@ const layout = [
     name: "VOICE",
     channels: [
       { name: "Office Hours", type: ChannelType.GuildVoice },
-      { name: "Feature Jam", type: ChannelType.GuildVoice },
     ],
   },
 ];

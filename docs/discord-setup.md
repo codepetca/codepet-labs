@@ -4,13 +4,17 @@ CodePet Labs uses Discord as an optional builder hangout for lightweight feedbac
 feature jams, and AI-assisted discussion. GitHub and the public site should remain
 the durable places for decisions, project work, and school-friendly access.
 
+Start intentionally small. One active builder channel is enough until traffic
+makes project-specific channels useful.
+
 ## Boundaries
 
 - Keep Discord optional for participation.
 - Do not require Discord for school-day work.
 - Do not post real student data, credentials, or production Pika details.
 - Use mock data and public-safe screenshots.
-- Keep AI helpers clearly labeled and confined to `#ai-builder-lab` at first.
+- Keep AI helper output clearly labeled in the active builder channel.
+- Add project channels only after one project has enough repeated discussion.
 
 ## Manual First Steps
 
@@ -57,38 +61,24 @@ Created roles:
 - `Labs Admin`
 - `Moderator`
 - `Builder`
-- `Tester`
-- `Pika User`
 - `AI Helper`
 
 Created channels:
 
 ```text
-START HERE
-#welcome
-#announcements
-#rules
-#introductions
-
 CODEPET LABS
-#feature-ideas
-#bug-reports
-#questions
-#show-and-tell
-#roadmap
-
-BUILDERS
-#design-review
-#implementation-notes
-#ai-builder-lab
+#announcements
+#builders
 
 VOICE
 Office Hours
-Feature Jam
 ```
 
-The `BUILDERS` category is private to `Builder`, `Moderator`, `Labs Admin`, and
-`AI Helper`. Assign roles manually after members join.
+Keep most discussion in `#builders`: questions, intros, demos, lightweight AI
+help, and quick feedback. Use GitHub issues, PRs, and docs for durable decisions.
+
+If you already ran an older bootstrap, delete unused channels manually. The
+script does not delete existing Discord content.
 
 ## After Bootstrap
 
@@ -97,7 +87,13 @@ The `BUILDERS` category is private to `Builder`, `Moderator`, `Labs Admin`, and
 3. Assign trusted helpers `Moderator`.
 4. Generate a Discord invite and set `CODEPET_DISCORD_INVITE_URL`.
    This enables the **Join Discord** link for approved builders in `/hub`.
-5. Keep `#announcements`, `#rules`, and `#roadmap` low-noise and read-only.
+5. Keep `#announcements` low-noise and read-only.
+
+Create more channels only when a real pattern appears:
+
+- `#project-name` for a project with repeated discussion.
+- `#office-hours` or a voice channel for scheduled help.
+- `#ai-lab` only if AI helper traffic starts crowding normal discussion.
 
 Later bot work should be added as explicit slash commands, such as:
 
