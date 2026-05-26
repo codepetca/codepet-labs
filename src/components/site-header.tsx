@@ -16,8 +16,14 @@ export function SiteHeader() {
 
         <nav
           aria-label="Main navigation"
-          className="-mx-1 flex min-w-0 gap-1 text-sm"
+          className="-mx-1 flex min-w-0 items-center gap-1 text-sm"
         >
+          <Link
+            href="/about"
+            className="inline-flex min-h-10 items-center rounded-md px-2.5 font-semibold text-muted transition hover:bg-card-soft hover:text-foreground"
+          >
+            About
+          </Link>
           <HeaderUserArea />
         </nav>
       </div>

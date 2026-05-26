@@ -113,6 +113,9 @@ profile flow in production.
 ## Docs
 
 - [Contributing](CONTRIBUTING.md)
+- [Labs Vision](docs/labs-vision.md)
+- [About Labs](docs/about-labs.md)
+- [Parent Info Letter](docs/parent-info-letter.md)
 - [Vision](docs/vision.md)
 - [Operating Model](docs/operating-model.md)
 - [Development Workflow](docs/dev-workflow.md)
