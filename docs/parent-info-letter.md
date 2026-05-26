@@ -4,7 +4,9 @@ Subject: CodePet Labs invitation
 
 Hello parents,
 
-Your student has been invited to join CodePet Labs this summer.
+Your student has been invited to join CodePet Labs this summer. My name is
+Stewart Chan, and I taught their Grade 11 Computer Science course this past
+semester.
 
 CodePet Labs is an independent, startup-style student builder lab operated by
 Codepet.ca. It is not affiliated with, sponsored by, or operated by any school.
@@ -25,6 +27,6 @@ Feel free to email me with any questions or concerns.
 
 Warm regards,
 
-[Sender Name]
+Stewart Chan
 
 CodePet Labs / Codepet.ca
