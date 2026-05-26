@@ -17,6 +17,7 @@ const OverwriteType = {
 };
 
 const Permission = {
+  KickMembers: 1n << 1n,
   ManageChannels: 1n << 4n,
   ViewChannel: 1n << 10n,
   SendMessages: 1n << 11n,
@@ -34,6 +35,7 @@ const rolesToCreate = [
       Permission.ViewChannel,
       Permission.SendMessages,
       Permission.ReadMessageHistory,
+      Permission.KickMembers,
       Permission.ManageMessages,
       Permission.ManageChannels,
       Permission.ManageRoles,
@@ -58,6 +60,7 @@ const rolesToCreate = [
 const layout = [
   {
     name: "CODEPET LABS",
+    privateTo: ["Labs Admin", "Moderator", "Builder", "AI Helper"],
     channels: [
       {
         name: "announcements",

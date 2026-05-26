@@ -9,6 +9,10 @@ import {
   getLabsGithubIdentity,
   isAdminEmail,
 } from "@/lib/labs-admin";
+import {
+  getDiscordConfigStatus,
+  getDiscordDisplayName,
+} from "@/lib/labs-discord";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +33,7 @@ export default async function HubPage() {
   user = await ensureLabsGithubUsername(user, githubIdentity);
 
   const config = getLabsConfig();
+  const discordConfigStatus = getDiscordConfigStatus();
   const isAdmin = isAdminEmail(user.email);
   const isApprovedBuilder = user.metadata.labsStatus === "approved";
 
@@ -54,7 +59,16 @@ export default async function HubPage() {
       </div>
 
       {isApprovedBuilder || isAdmin ? (
-        <DiscordSection inviteUrl={config.discordInviteUrl} />
+        <DiscordSection
+          discordDisplayName={
+            getDiscordDisplayName({
+              discordGlobalName: user.metadata.discordGlobalName ?? null,
+              discordUsername: user.metadata.discordUsername ?? null,
+            }) ?? null
+          }
+          inviteUrl={config.discordInviteUrl}
+          linkingReady={discordConfigStatus.ready}
+        />
       ) : null}
 
       <section className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -68,17 +82,50 @@ export default async function HubPage() {
   );
 }
 
-function DiscordSection({ inviteUrl }: { inviteUrl: string | null }) {
+function DiscordSection({
+  discordDisplayName,
+  inviteUrl,
+  linkingReady,
+}: {
+  discordDisplayName: string | null;
+  inviteUrl: string | null;
+  linkingReady: boolean;
+}) {
   return (
     <section className="mt-6 rounded-lg border border-border bg-card p-5 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
         <div>
           <h2 className="text-lg font-semibold text-foreground">Discord</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
-            Quick questions and demos. Durable work stays in GitHub.
+            Link Discord to join the server and keep access in sync.
           </p>
+          {discordDisplayName ? (
+            <p className="mt-2 text-sm font-medium text-foreground">
+              Linked as {discordDisplayName}
+            </p>
+          ) : null}
         </div>
-        {inviteUrl ? (
+        {discordDisplayName ? (
+          inviteUrl ? (
+            <a
+              href={inviteUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-4 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+            >
+              Join Discord
+            </a>
+          ) : (
+            <StatusChip label="discord linked" />
+          )
+        ) : linkingReady ? (
+          <Link
+            href="/discord/link"
+            className="inline-flex min-h-11 items-center justify-center rounded-md bg-foreground px-4 py-3 text-sm font-semibold text-background transition hover:opacity-90"
+          >
+            Link Discord
+          </Link>
+        ) : inviteUrl ? (
           <a
             href={inviteUrl}
             target="_blank"
@@ -88,7 +135,7 @@ function DiscordSection({ inviteUrl }: { inviteUrl: string | null }) {
             Join Discord
           </a>
         ) : (
-          <StatusChip label="invite coming soon" />
+          <StatusChip label="discord setup needed" />
         )}
       </div>
     </section>
