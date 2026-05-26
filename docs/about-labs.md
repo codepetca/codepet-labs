@@ -1,7 +1,8 @@
 # CodePet Labs
 
-CodePet Labs is an independent, startup-style summer builder group for invited
-students. It is not affiliated with, sponsored by, or operated by any school;
+CodePet Labs is an independent, startup-style summer builder group for motivated
+students who are eager to learn and experiment with modern AI-assisted software
+workflows. It is not affiliated with, sponsored by, or operated by any school;
 CodePet.ca provides the support and funding.
 
 Labs is connected to CodePet and Pika, a classroom management system like
@@ -12,11 +13,11 @@ projects, prototypes, docs, and demos.
 
 ## Shape
 
-- Currently by invitation
-- Weekly 1-2 hour check-ins
-- About 10 hours per week over the summer
-- Independent work with collaborative review
-- Mock data first
+- By invitation
+- 8-week summer format
+- Weekly 1-2 hour online video check-ins
+- About 10 hours per week of independent learning and building
+- Final demo and wrap-up
 
 ## Outcomes
 

@@ -60,9 +60,9 @@ test("about page renders the Labs vision summary", async ({ page }) => {
     page.getByText("not affiliated with, sponsored by, or operated by any school"),
   ).toBeVisible();
   await expect(page.getByText("CodePet.ca provides")).toBeVisible();
-  await expect(page.getByText("Currently by invitation")).toBeVisible();
+  await expect(page.getByText("By invitation")).toBeVisible();
   await expect(
-    page.getByText("About 10 hours per week over the summer"),
+    page.getByText("About 10 hours per week of independent learning and building"),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: "Join", exact: true }),
