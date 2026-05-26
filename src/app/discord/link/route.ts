@@ -7,6 +7,7 @@ import { getCurrentLabsUser, isAdminEmail } from "@/lib/labs-admin";
 import {
   getDiscordAuthorizationUrl,
   getDiscordConfigStatus,
+  hasLinkedDiscordIdentity,
 } from "@/lib/labs-discord";
 
 const DISCORD_STATE_COOKIE = "codepet_discord_oauth_state";
@@ -24,6 +25,10 @@ export async function GET(request: NextRequest) {
 
   if (!isAllowed) {
     return NextResponse.redirect(new URL("/profile", request.url));
+  }
+
+  if (hasLinkedDiscordIdentity(user)) {
+    return NextResponse.redirect(new URL("/hub?discord=linked", request.url));
   }
 
   const state = randomBytes(24).toString("base64url");

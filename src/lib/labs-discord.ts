@@ -34,6 +34,12 @@ export function getDiscordRoleNameForLabsUser({
   return isAdmin ? LABS_ADMIN_ROLE_NAME : BUILDER_ROLE_NAME;
 }
 
+export function hasLinkedDiscordIdentity(user: {
+  metadata: { discordUserId?: string | null };
+}) {
+  return Boolean(user.metadata.discordUserId?.trim());
+}
+
 export function getDiscordConfigStatus() {
   const missing = [
     "DISCORD_CLIENT_ID",

@@ -10,6 +10,7 @@ import {
   exchangeDiscordCode,
   fetchDiscordUser,
   getDiscordRoleNameForLabsUser,
+  hasLinkedDiscordIdentity,
   joinDiscordGuildWithRole,
 } from "@/lib/labs-discord";
 
@@ -33,6 +34,10 @@ export async function GET(request: NextRequest) {
 
   if (!isAllowed) {
     return NextResponse.redirect(new URL("/profile", request.url));
+  }
+
+  if (hasLinkedDiscordIdentity(user)) {
+    return NextResponse.redirect(new URL("/hub?discord=linked", request.url));
   }
 
   try {
