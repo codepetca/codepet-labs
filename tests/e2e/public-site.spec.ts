@@ -49,3 +49,22 @@ test("projects page renders launch note and prototype list", async ({ page }) =>
     page.getByRole("heading", { name: "Gradex Dashboard Prototype" }),
   ).toBeVisible();
 });
+
+test("about page renders the Labs vision summary", async ({ page }) => {
+  await page.goto("/about");
+
+  await expect(
+    page.getByRole("heading", { name: "CodePet Labs" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("not affiliated with, sponsored by, or operated by any school"),
+  ).toBeVisible();
+  await expect(page.getByText("CodePet.ca provides")).toBeVisible();
+  await expect(page.getByText("Currently by invitation")).toBeVisible();
+  await expect(
+    page.getByText("About 10 hours per week over the summer"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Join", exact: true }),
+  ).toHaveAttribute("href", "/signup");
+});
