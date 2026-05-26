@@ -9,7 +9,8 @@ import {
 import {
   exchangeDiscordCode,
   fetchDiscordUser,
-  joinDiscordGuildWithBuilderRole,
+  getDiscordRoleNameForLabsUser,
+  joinDiscordGuildWithRole,
 } from "@/lib/labs-discord";
 
 const DISCORD_STATE_COOKIE = "codepet_discord_oauth_state";
@@ -27,8 +28,8 @@ export async function GET(request: NextRequest) {
   }
 
   const user = await getCurrentLabsUser();
-  const isAllowed =
-    user.metadata.labsStatus === "approved" || isAdminEmail(user.email);
+  const isAdmin = isAdminEmail(user.email);
+  const isAllowed = user.metadata.labsStatus === "approved" || isAdmin;
 
   if (!isAllowed) {
     return NextResponse.redirect(new URL("/profile", request.url));
@@ -38,17 +39,18 @@ export async function GET(request: NextRequest) {
     const accessToken = await exchangeDiscordCode(code);
     const discordUser = await fetchDiscordUser(accessToken);
 
+    await joinDiscordGuildWithRole({
+      accessToken,
+      discordUserId: discordUser.id,
+      roleName: getDiscordRoleNameForLabsUser({ isAdmin }),
+    });
+
     await updateLabsUserMetadata(user.id, {
       discordGlobalName: discordUser.globalName ?? "",
       discordLinkedAt: new Date().toISOString(),
       discordRemovedAt: "",
       discordUserId: discordUser.id,
       discordUsername: discordUser.username,
-    });
-
-    await joinDiscordGuildWithBuilderRole({
-      accessToken,
-      discordUserId: discordUser.id,
     });
 
     return NextResponse.redirect(new URL("/hub?discord=linked", request.url));

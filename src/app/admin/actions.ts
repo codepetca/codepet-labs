@@ -53,7 +53,7 @@ export async function pauseBuilder(formData: FormData) {
   };
 
   if (discordUserId) {
-    const result = await setDiscordBuilderRole(discordUserId, false);
+    const result = await syncDiscordBuilderRole(discordUserId, false);
 
     nextMetadata.discordLastRoleSyncResult = result;
     nextMetadata.discordRoleSyncedAt = new Date().toISOString();
@@ -75,7 +75,7 @@ export async function reactivateBuilder(formData: FormData) {
   };
 
   if (discordUserId) {
-    const result = await setDiscordBuilderRole(discordUserId, true);
+    const result = await syncDiscordBuilderRole(discordUserId, true);
 
     nextMetadata.discordLastRoleSyncResult = result;
     nextMetadata.discordRoleSyncedAt = new Date().toISOString();
@@ -92,13 +92,17 @@ export async function removeBuilderFromDiscord(formData: FormData) {
   const userId = getFormValue(formData, "userId");
   const discordUserId = getOptionalFormValue(formData, "discordUserId");
 
-  const result = await removeDiscordMember(discordUserId);
+  const result = await removeDiscordAccess(discordUserId);
   const nextMetadata: Record<string, string> = {
     discordLastRemovalResult: result,
   };
 
   if (result === "ok" || result === "not_in_server") {
+    nextMetadata.discordGlobalName = "";
+    nextMetadata.discordLinkedAt = "";
     nextMetadata.discordRemovedAt = new Date().toISOString();
+    nextMetadata.discordUserId = "";
+    nextMetadata.discordUsername = "";
   }
 
   await updateLabsUserMetadata(userId, nextMetadata);
@@ -120,4 +124,22 @@ function getOptionalFormValue(formData: FormData, key: string) {
   const value = formData.get(key);
 
   return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+async function syncDiscordBuilderRole(discordUserId: string, enabled: boolean) {
+  try {
+    return await setDiscordBuilderRole(discordUserId, enabled);
+  } catch (error) {
+    console.error("[Discord role sync error]", error);
+    return "error";
+  }
+}
+
+async function removeDiscordAccess(discordUserId: string | null) {
+  try {
+    return await removeDiscordMember(discordUserId);
+  } catch (error) {
+    console.error("[Discord removal error]", error);
+    return "error";
+  }
 }

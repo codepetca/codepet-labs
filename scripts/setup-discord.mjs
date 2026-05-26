@@ -17,6 +17,7 @@ const OverwriteType = {
 };
 
 const Permission = {
+  CreateInstantInvite: 1n << 0n,
   KickMembers: 1n << 1n,
   ManageChannels: 1n << 4n,
   ViewChannel: 1n << 10n,
@@ -33,6 +34,7 @@ const rolesToCreate = [
     color: 0x2563eb,
     permissions: bits([
       Permission.ViewChannel,
+      Permission.CreateInstantInvite,
       Permission.SendMessages,
       Permission.ReadMessageHistory,
       Permission.KickMembers,
@@ -54,7 +56,11 @@ const rolesToCreate = [
     ]),
   },
   { name: "Builder", color: 0x16a34a, permissions: "0" },
-  { name: "AI Helper", color: 0x64748b, permissions: "0" },
+  {
+    name: "AI Helper",
+    color: 0x64748b,
+    permissions: bits([Permission.CreateInstantInvite]),
+  },
 ];
 
 const layout = [

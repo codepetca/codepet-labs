@@ -18,6 +18,8 @@ CodePet Labs uses WorkOS as the member source of truth.
     metadata so admins can remove Discord access later.
 12. Pausing a linked builder removes the Discord `Builder` role. The paused
     list has a separate remove action that kicks them from the Discord server.
+    Successful removal clears the active Discord link so reactivated builders
+    link again from `/hub`.
 
 Admin allowlist users skip the builder application flow. After sign-in, `/profile`
 redirects them to `/admin`, and admin users are excluded from review buckets.

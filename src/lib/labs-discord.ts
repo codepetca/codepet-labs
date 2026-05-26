@@ -1,4 +1,5 @@
 const DISCORD_API_BASE = "https://discord.com/api/v10";
+const LABS_ADMIN_ROLE_NAME = "Labs Admin";
 const BUILDER_ROLE_NAME = "Builder";
 
 type DiscordTokenResponse = {
@@ -24,6 +25,14 @@ export type DiscordMemberActionResult =
   | "missing_role"
   | "not_in_server"
   | "ok";
+
+export function getDiscordRoleNameForLabsUser({
+  isAdmin,
+}: {
+  isAdmin: boolean;
+}) {
+  return isAdmin ? LABS_ADMIN_ROLE_NAME : BUILDER_ROLE_NAME;
+}
 
 export function getDiscordConfigStatus() {
   const missing = [
@@ -121,21 +130,20 @@ export async function fetchDiscordUser(accessToken: string) {
   };
 }
 
-export async function joinDiscordGuildWithBuilderRole({
+export async function joinDiscordGuildWithRole({
   accessToken,
   discordUserId,
+  roleName,
 }: {
   accessToken: string;
   discordUserId: string;
+  roleName: string;
 }) {
-  const roleId = await getDiscordRoleId(BUILDER_ROLE_NAME);
+  const roleId = await getRequiredDiscordRoleId(roleName);
   const body: { access_token: string; roles?: string[] } = {
     access_token: accessToken,
+    roles: [roleId],
   };
-
-  if (roleId) {
-    body.roles = [roleId];
-  }
 
   const response = await discordBotFetch(
     `/guilds/${getDiscordBotConfig().guildId}/members/${discordUserId}`,
@@ -151,13 +159,23 @@ export async function joinDiscordGuildWithBuilderRole({
     );
   }
 
-  if (roleId) {
-    await setDiscordBuilderRole(discordUserId, true);
+  const roleResult = await setDiscordRole(discordUserId, roleName, true);
+
+  if (roleResult !== "ok") {
+    throw new Error(`Could not assign Discord role: ${roleResult}`);
   }
 }
 
 export async function setDiscordBuilderRole(
   discordUserId: string | null | undefined,
+  enabled: boolean,
+): Promise<DiscordMemberActionResult> {
+  return setDiscordRole(discordUserId, BUILDER_ROLE_NAME, enabled);
+}
+
+async function setDiscordRole(
+  discordUserId: string | null | undefined,
+  roleName: string,
   enabled: boolean,
 ): Promise<DiscordMemberActionResult> {
   if (!discordUserId) {
@@ -168,7 +186,7 @@ export async function setDiscordBuilderRole(
     return "missing_config";
   }
 
-  const roleId = await getDiscordRoleId(BUILDER_ROLE_NAME);
+  const roleId = await getDiscordRoleId(roleName);
 
   if (!roleId) {
     return "missing_role";
@@ -271,6 +289,16 @@ async function getDiscordRoleId(roleName: string) {
   const roles = (await response.json()) as DiscordRole[];
 
   return roles.find((role) => role.name === roleName)?.id ?? null;
+}
+
+async function getRequiredDiscordRoleId(roleName: string) {
+  const roleId = await getDiscordRoleId(roleName);
+
+  if (!roleId) {
+    throw new Error(`Missing Discord role: ${roleName}`);
+  }
+
+  return roleId;
 }
 
 async function discordBotFetch(
