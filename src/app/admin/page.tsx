@@ -6,8 +6,10 @@ import {
   pauseBuilder,
   reactivateBuilder,
   removeBuilderFromDiscord,
+  removePausedUser,
   restorePotentialUser,
 } from "@/app/admin/actions";
+import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 import {
   getLabsConfigStatus,
   getLabsDirectory,
@@ -17,7 +19,6 @@ import {
 import { getDiscordDisplayName } from "@/lib/labs-discord";
 import {
   getLabsOptionLabels,
-  LABS_AI_TOOL_OPTIONS,
   LABS_AVAILABILITY_OPTIONS,
   LABS_GITHUB_COMFORT_OPTIONS,
   LABS_INTEREST_OPTIONS,
@@ -134,6 +135,7 @@ function AdminDashboard({
                 <ActionButton label="Reactivate" primary />
               </form>
               <DiscordRemovalForm user={user} />
+              <PausedUserRemovalForm user={user} />
             </UserCard>
           ))
         ) : (
@@ -180,9 +182,9 @@ function UserCard({
   children: React.ReactNode;
 }) {
   return (
-    <article className="grid gap-3 rounded-md border border-border bg-card-soft p-3 sm:grid-cols-[1fr_auto] sm:items-center">
+    <article className="grid gap-2 rounded-md border border-border bg-card-soft p-3 sm:grid-cols-[1fr_auto] sm:items-center">
       <UserSummary user={user} />
-      <div className="flex flex-wrap gap-2">{children}</div>
+      <div className="flex flex-wrap gap-2 sm:justify-end">{children}</div>
     </article>
   );
 }
@@ -191,9 +193,14 @@ function UserSummary({ user }: { user: LabsUser }) {
   const contactEmail = user.contactEmail ?? user.email;
 
   return (
-    <div>
-      <p className="font-semibold text-foreground">{user.name}</p>
-      <div className="mt-1 flex flex-wrap gap-2 text-sm text-muted">
+    <div className="min-w-0">
+      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+        <p className="font-semibold text-foreground">{user.name}</p>
+        {user.affiliation ? (
+          <span className="text-xs text-muted">{user.affiliation}</span>
+        ) : null}
+      </div>
+      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
         <a href={`mailto:${contactEmail}`} className="hover:text-foreground">
           {contactEmail}
         </a>
@@ -208,7 +215,6 @@ function UserSummary({ user }: { user: LabsUser }) {
         ) : (
           <span>No GitHub handle</span>
         )}
-        {user.affiliation ? <span>{user.affiliation}</span> : null}
         {getDiscordDisplayName(user) ? (
           <span>Discord: {getDiscordDisplayName(user)}</span>
         ) : (
@@ -217,6 +223,23 @@ function UserSummary({ user }: { user: LabsUser }) {
       </div>
       {user.labsProfileCompletedAt ? <ProfileDetails user={user} /> : null}
     </div>
+  );
+}
+
+function PausedUserRemovalForm({ user }: { user: LabsUser }) {
+  return (
+    <form action={removePausedUser}>
+      <input type="hidden" name="userId" value={user.id} />
+      <ConfirmSubmitButton
+        className={getActionButtonClassName({ tone: "danger" })}
+        message={[
+          `Remove ${user.name} from CodePet Labs?`,
+          "This deletes the WorkOS user and cannot be undone.",
+        ].join(" ")}
+      >
+        Remove user
+      </ConfirmSubmitButton>
+    </form>
   );
 }
 
@@ -235,47 +258,45 @@ function DiscordRemovalForm({ user }: { user: LabsUser }) {
 }
 
 function ProfileDetails({ user }: { user: LabsUser }) {
-  return (
-    <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-      <ProfileLine
-        label="Interests"
-        value={formatOptionLabels(user.interests, LABS_INTEREST_OPTIONS)}
-      />
-      <ProfileLine
-        label="GitHub comfort"
-        value={formatOptionLabels(
-          user.githubComfort,
-          LABS_GITHUB_COMFORT_OPTIONS,
-        )}
-      />
-      <ProfileLine
-        label="AI"
-        value={formatOptionLabels(user.aiTools, LABS_AI_TOOL_OPTIONS)}
-      />
-      <ProfileLine
-        label="Availability"
-        value={formatOptionLabels(user.availability, LABS_AVAILABILITY_OPTIONS)}
-      />
-      <ProfileLine
-        label="Role"
-        value={formatOptionLabels(user.preferredRole, LABS_ROLE_OPTIONS)}
-      />
-      <ProfileLine label="Referrer" value={user.referrer || "Not added"} />
-      {user.buildGoal ? (
-        <div className="sm:col-span-2">
-          <dt className="font-medium text-foreground">Goal</dt>
-          <dd className="mt-1 leading-6 text-muted">{user.buildGoal}</dd>
-        </div>
-      ) : null}
-    </dl>
+  const details = [
+    getCompactProfileLine("Role", user.preferredRole, LABS_ROLE_OPTIONS),
+    getCompactProfileLine("Interests", user.interests, LABS_INTEREST_OPTIONS),
+    getCompactProfileLine(
+      "Availability",
+      user.availability,
+      LABS_AVAILABILITY_OPTIONS,
+    ),
+    getCompactProfileLine(
+      "GitHub",
+      user.githubComfort,
+      LABS_GITHUB_COMFORT_OPTIONS,
+    ),
+  ].filter((detail): detail is { label: string; value: string } =>
+    Boolean(detail),
   );
-}
 
-function ProfileLine({ label, value }: { label: string; value: string }) {
+  if (!details.length && !user.buildGoal) {
+    return null;
+  }
+
   return (
-    <div>
-      <dt className="font-medium text-foreground">{label}</dt>
-      <dd className="mt-1 text-muted">{value}</dd>
+    <div className="mt-2 space-y-1 text-xs text-muted">
+      {details.length ? (
+        <dl className="flex flex-wrap gap-x-3 gap-y-1">
+          {details.map((detail) => (
+            <div key={detail.label} className="flex gap-1">
+              <dt className="font-medium text-foreground">{detail.label}:</dt>
+              <dd>{detail.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      {user.buildGoal ? (
+        <p className="max-w-full truncate">
+          <span className="font-medium text-foreground">Goal:</span>{" "}
+          {user.buildGoal}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -310,11 +331,7 @@ function ActionButton({
     <button
       type="submit"
       disabled={disabled}
-      className={
-        primary
-          ? "min-h-10 rounded-md bg-foreground px-3 text-sm font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-          : "min-h-10 rounded-md border border-border bg-surface px-3 text-sm font-semibold text-foreground transition hover:bg-card disabled:cursor-not-allowed disabled:opacity-40"
-      }
+      className={getActionButtonClassName({ primary })}
     >
       {label}
     </button>
@@ -367,11 +384,30 @@ function AccessProblem({ error }: { error: unknown }) {
   );
 }
 
-function formatOptionLabels(
+function getCompactProfileLine(
+  label: string,
   storedValue: string | null,
   options: Parameters<typeof getLabsOptionLabels>[1],
 ) {
   const labels = getLabsOptionLabels(storedValue, options);
 
-  return labels.length ? labels.join(", ") : "Not added";
+  return labels.length ? { label, value: labels.join(", ") } : null;
+}
+
+function getActionButtonClassName({
+  primary = false,
+  tone = "default",
+}: {
+  primary?: boolean;
+  tone?: "default" | "danger";
+}) {
+  if (primary) {
+    return "min-h-10 rounded-md bg-foreground px-3 text-sm font-semibold text-background transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40";
+  }
+
+  if (tone === "danger") {
+    return "min-h-10 rounded-md border border-warm bg-warm-soft px-3 text-sm font-semibold text-foreground transition hover:bg-card disabled:cursor-not-allowed disabled:opacity-40";
+  }
+
+  return "min-h-10 rounded-md border border-border bg-surface px-3 text-sm font-semibold text-foreground transition hover:bg-card disabled:cursor-not-allowed disabled:opacity-40";
 }

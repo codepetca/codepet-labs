@@ -60,7 +60,8 @@ Labs has a lightweight WorkOS-backed approval flow:
 - `/profile` requires a linked GitHub OAuth identity, records the GitHub username
   when it can be resolved, and asks for a short builder profile before review.
 - `/hub` is the approved-builder workspace.
-- `/admin` lets allowlisted admins approve, pause, reactivate, or hide builders.
+- `/admin` lets allowlisted admins approve, pause, reactivate, hide, or remove
+  paused builders.
 - Approved builders can join Discord and open project links from `/hub`.
 
 Set these environment variables locally and in Vercel:
