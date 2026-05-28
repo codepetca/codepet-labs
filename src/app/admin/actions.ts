@@ -2,8 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireLabsAdmin, updateLabsUserMetadata } from "@/lib/labs-admin";
-import { removeDiscordMember, setDiscordBuilderRole } from "@/lib/labs-discord";
+import {
+  deletePausedLabsUser,
+  getPausedLabsUserRemovalTarget,
+  requireLabsAdmin,
+  updateLabsUserMetadata,
+} from "@/lib/labs-admin";
+import {
+  type DiscordMemberActionResult,
+  removeDiscordMember,
+  setDiscordBuilderRole,
+} from "@/lib/labs-discord";
 
 export async function approveUser(formData: FormData) {
   await requireLabsAdmin();
@@ -110,6 +119,26 @@ export async function removeBuilderFromDiscord(formData: FormData) {
   revalidatePath("/admin");
 }
 
+export async function removePausedUser(formData: FormData) {
+  await requireLabsAdmin();
+
+  const userId = getFormValue(formData, "userId");
+  const target = await getPausedLabsUserRemovalTarget(userId);
+  const result = await removeDiscordAccess(target.discordUserId);
+
+  if (!canDeleteAfterDiscordRemoval(result)) {
+    await updateLabsUserMetadata(userId, {
+      discordLastRemovalResult: result,
+    });
+    revalidatePath("/admin");
+    return;
+  }
+
+  await deletePausedLabsUser(userId);
+
+  revalidatePath("/admin");
+}
+
 function getFormValue(formData: FormData, key: string) {
   const value = formData.get(key);
 
@@ -142,4 +171,14 @@ async function removeDiscordAccess(discordUserId: string | null) {
     console.error("[Discord removal error]", error);
     return "error";
   }
+}
+
+function canDeleteAfterDiscordRemoval(
+  result: DiscordMemberActionResult | "error",
+) {
+  return (
+    result === "ok" ||
+    result === "not_in_server" ||
+    result === "missing_identity"
+  );
 }

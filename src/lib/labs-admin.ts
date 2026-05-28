@@ -182,6 +182,27 @@ export async function updateLabsUserMetadata(
   });
 }
 
+export async function getPausedLabsUserRemovalTarget(userId: string) {
+  const user = await getWorkOSClient().userManagement.getUser(userId);
+
+  if (isAdminEmail(user.email)) {
+    throw new Error("Admins cannot be removed from Labs.");
+  }
+
+  if (user.metadata.labsStatus !== "inactive") {
+    throw new Error("Only paused builders can be removed from Labs.");
+  }
+
+  return {
+    discordUserId: user.metadata.discordUserId || null,
+  };
+}
+
+export async function deletePausedLabsUser(userId: string) {
+  await getPausedLabsUserRemovalTarget(userId);
+  await getWorkOSClient().userManagement.deleteUser(userId);
+}
+
 export async function requireLabsAdmin() {
   const session = await withAuth({ ensureSignedIn: true });
   const user = await getWorkOSClient().userManagement.getUser(session.user.id);

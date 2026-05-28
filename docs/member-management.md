@@ -16,10 +16,11 @@ CodePet Labs uses WorkOS as the member source of truth.
 10. Approved builders use `/hub` for Discord and project links.
 11. Builders click **Join Discord** from `/hub`; Discord OAuth stores the user
     ID in WorkOS metadata so admins can remove Discord access later.
-12. Pausing a linked builder removes the Discord `Builder` role. The paused
-    list has a separate remove action that kicks them from the Discord server.
-    Successful removal clears the active Discord link so reactivated builders
-    link again from `/hub`.
+12. Pausing a linked builder removes the Discord `Builder` role.
+13. The paused list can remove Discord access, or remove the paused builder
+    from Labs entirely. Full removal first kicks them from Discord when linked,
+    then permanently deletes the WorkOS user. If Discord removal cannot run,
+    the builder stays paused so an admin can retry.
 
 Admin allowlist users skip the builder application flow. After sign-in, `/profile`
 redirects them to `/admin`, and admin users are excluded from review buckets.
