@@ -1,29 +1,17 @@
 "use client";
 
-import { AuthKitProvider, useAuth } from "@workos-inc/authkit-nextjs/components";
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
 import type { User } from "@workos-inc/node";
 import Link from "next/link";
 import type { KeyboardEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 
-const AUTHED_PATHS = ["/admin", "/hub", "/profile"] as const;
-
-export function HeaderUserArea() {
-  const pathname = usePathname();
-  const shouldLoadUser = AUTHED_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`),
-  );
-
-  if (!shouldLoadUser) {
+export function HeaderUserArea({ authReady }: { authReady: boolean }) {
+  if (!authReady) {
     return <GuestUserMenu />;
   }
 
-  return (
-    <AuthKitProvider onSessionExpired={false}>
-      <AuthenticatedUserMenu />
-    </AuthKitProvider>
-  );
+  return <AuthenticatedUserMenu />;
 }
 
 function AuthenticatedUserMenu() {
@@ -309,7 +297,7 @@ function GuestUserMenu() {
           refCallback={(element) => {
             profileLinkRef.current = element;
           }}
-          href="/profile"
+          href="/login"
           label="Profile"
           onClick={closeMenu}
           tabIndex={isOpen ? 0 : -1}

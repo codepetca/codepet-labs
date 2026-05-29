@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { getLabsConfigStatus } from "@/lib/labs-admin";
 
 import "./globals.css";
 
@@ -31,15 +33,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const authReady = getLabsConfigStatus().ready;
+  const content = (
+    <>
+      <SiteHeader authReady={authReady} />
+      {children}
+      <SiteFooter />
+    </>
+  );
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        {authReady ? <AuthKitProvider>{content}</AuthKitProvider> : content}
       </body>
     </html>
   );

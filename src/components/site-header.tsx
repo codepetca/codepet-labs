@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { HeaderUserArea } from "@/components/header-user-menu";
 
-export function SiteHeader() {
+export function SiteHeader({ authReady }: { authReady: boolean }) {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
@@ -30,7 +30,7 @@ export function SiteHeader() {
           >
             Contributors
           </Link>
-          <HeaderUserArea />
+          <HeaderUserArea authReady={authReady} />
         </nav>
       </div>
     </header>
