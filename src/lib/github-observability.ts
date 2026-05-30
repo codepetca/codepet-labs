@@ -238,10 +238,7 @@ async function readObservedRepoSelection() {
   }
 
   try {
-    const blob = await get(OBSERVED_REPOS_BLOB_KEY, {
-      access: "public",
-      useCache: false,
-    });
+    const blob = await get(OBSERVED_REPOS_BLOB_KEY, { access: "public" });
 
     if (!blob || blob.statusCode !== 200) {
       return {

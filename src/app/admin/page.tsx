@@ -182,7 +182,19 @@ function RepoActivitySection({
   dashboard: RepoObservabilityDashboard;
 }) {
   return (
-    <AdminSection title="Projects" count={dashboard.selectedRepos.length}>
+    <AdminSection
+      title="Projects"
+      action={
+        dashboard.repos.length ? (
+          <RepoObserverPicker
+            action={saveObservedRepos}
+            repos={dashboard.repos}
+            selectedRepoNames={dashboard.selectedRepoNames}
+            storageReady={dashboard.storageReady}
+          />
+        ) : null
+      }
+    >
       {dashboard.githubError ? (
         <EmptyState label="GitHub repos are unavailable." />
       ) : null}
@@ -204,15 +216,6 @@ function RepoActivitySection({
       ) : (
         <EmptyState label="No observed repos selected." />
       )}
-
-      {dashboard.repos.length ? (
-        <RepoObserverPicker
-          action={saveObservedRepos}
-          repos={dashboard.repos}
-          selectedRepoNames={dashboard.selectedRepoNames}
-          storageReady={dashboard.storageReady}
-        />
-      ) : null}
     </AdminSection>
   );
 }
@@ -289,19 +292,23 @@ function ActivityBars({
 }
 
 function AdminSection({
+  action,
   count,
   title,
   children,
 }: {
-  count: number;
+  action?: React.ReactNode;
+  count?: number;
   title: string;
   children: React.ReactNode;
 }) {
   return (
     <section className="mt-6 border-t border-border pt-4">
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <h2 className="text-base font-semibold text-foreground">{title}</h2>
-        <span className="text-xs font-semibold text-muted">{count}</span>
+        {action ?? (
+          <span className="text-xs font-semibold text-muted">{count}</span>
+        )}
       </div>
       <div className="mt-3 grid gap-2">{children}</div>
     </section>

@@ -69,10 +69,11 @@ export function RepoObserverPicker({
     <>
       <button
         type="button"
-        className="mt-1 min-h-9 w-fit rounded-md border border-border bg-surface px-3 text-sm font-semibold text-foreground transition hover:bg-card"
+        className="grid size-9 place-items-center rounded-md border border-border bg-surface text-muted transition hover:bg-card hover:text-foreground"
         onClick={() => setIsOpen(true)}
+        aria-label="Repo settings"
       >
-        Repo settings
+        <GearIcon />
       </button>
 
       {isOpen ? (
@@ -239,6 +240,24 @@ function CloseIcon() {
     >
       <path d="m6 6 12 12" />
       <path d="m18 6-12 12" />
+    </svg>
+  );
+}
+
+function GearIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-4"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    >
+      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.1.6.63 1 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51 1Z" />
     </svg>
   );
 }
