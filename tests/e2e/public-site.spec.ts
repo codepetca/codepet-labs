@@ -15,7 +15,7 @@ test("home page shows the Labs entry point and projects", async ({
   await expect(page).toHaveURL("/");
   await expect(page.getByRole("menuitem", { name: "Profile" })).toHaveAttribute(
     "href",
-    "/profile",
+    "/login",
   );
   await expect(
     page.getByRole("link", { name: "Contributors" }),

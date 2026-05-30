@@ -1,12 +1,24 @@
+import { withAuth } from "@workos-inc/authkit-nextjs";
+import { redirect } from "next/navigation";
+
 import { SectionHeading } from "@/components/section-heading";
 import { TrackCard } from "@/components/track-card";
 import type { ProjectCardProject } from "@/components/project-card";
+import {
+  getLabsConfigStatus,
+  getWorkOSClient,
+  isAdminEmail,
+} from "@/lib/labs-admin";
 
 import projects from "../../content/projects.json";
 
 const projectList = projects as ProjectCardProject[];
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  await redirectSignedInUser();
+
   return (
     <main>
       <section
@@ -44,4 +56,28 @@ export default function Home() {
       </section>
     </main>
   );
+}
+
+async function redirectSignedInUser() {
+  if (!getLabsConfigStatus().ready) {
+    return;
+  }
+
+  const { user } = await withAuth();
+
+  if (!user) {
+    return;
+  }
+
+  const labsUser = await getWorkOSClient().userManagement.getUser(user.id);
+
+  if (isAdminEmail(labsUser.email)) {
+    redirect("/admin");
+  }
+
+  if (labsUser.metadata.labsStatus === "approved") {
+    redirect("/hub");
+  }
+
+  redirect("/profile");
 }
