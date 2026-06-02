@@ -6,7 +6,6 @@ import { TrackCard } from "@/components/track-card";
 import type { ProjectCardProject } from "@/components/project-card";
 import {
   getLabsConfigStatus,
-  getWorkOSClient,
   isAdminEmail,
 } from "@/lib/labs-admin";
 
@@ -69,13 +68,11 @@ async function redirectSignedInUser() {
     return;
   }
 
-  const labsUser = await getWorkOSClient().userManagement.getUser(user.id);
-
-  if (isAdminEmail(labsUser.email)) {
+  if (isAdminEmail(user.email)) {
     redirect("/admin");
   }
 
-  if (labsUser.metadata.labsStatus === "approved") {
+  if (user.metadata.labsStatus === "approved") {
     redirect("/hub");
   }
 
